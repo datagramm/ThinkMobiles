@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const User = require('./models/User');
 const events = require("events");
+const {checkingEventDate} = require("./checkingEventDate");
 
 mongoose.set('strictQuery', true);
 mongoose.connect(db).then(res => {
@@ -44,20 +45,8 @@ app.post('/pushUser', async (req,res) => {
     console.log(newUser)
 })
 
-app.post('/pushEvent', async (req,res) => {
-        console.log(req.body.currentUser.firstName)
-    await User.findOneAndUpdate({
-        firstName: req.body.currentUser.firstName,
-        lastName: req.body.currentUser.lastName,
-        phoneNumber: req.body.currentUser.phone,
-        mail: req.body.currentUser.mail,
-    }, {$inc: {eventCount: 1} ,$push:{events: req.body.event}}, {new: true}).then(async(user) => {
-        await res.setHeader('Access-Control-Allow-Origin', "*");
-        res.send(req.body.event);
+app.post('/pushEvent',  checkingEventDate);
 
-    })
-
-})
 app.post('/getCurrentUserEvents',  async (req,res) => {
     await  User.findOne({firstName: req.body.firstName, lastName: req.body.lastName ,phoneNumber: req.body.phone, mail:req.body.mail})
         .then(async(user) => {

@@ -36,12 +36,12 @@ const userSchema = new Schema({
                 type: String,
                 required: true,
             },
-            startEventData: {
+            startEventDate: {
                 type: String,
                 required: true,
 
             },
-            endEventData: {
+            endEventDate: {
                 type: String,
                 required: true,
 

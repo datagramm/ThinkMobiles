@@ -49,6 +49,7 @@ import userAddingMenu from "@/components/userAddingMenu.vue";
 import userProfile from "@/components/userProfile.vue";
 import EventList from "@/components/eventList.vue";
 import eventAddingMenu from "@/components/eventAddingMenu.vue";
+
 export default {
   name: 'App',
   data(){
@@ -62,6 +63,7 @@ export default {
       pageCount: 0,
       pageEventCount: 0,
       showingMenu: false,
+      showingAler: false,
       showingEvent: false,
       currentTodo: {},
     }
@@ -97,6 +99,7 @@ export default {
         this.clickCallback(this.pageCount)
     },
     pushEvent(event){
+      if (event.error) return console.log('this data is overlapping');
       this.Events.push(event);
       this.getAllUsers();
       this.clickCallback2(this.pageEventCount)
@@ -148,17 +151,21 @@ export default {
         this.todos = []
         users.forEach(user => this.todos.push(user)
         )})
-          .then(() => this.clickCallback(this.page))
+          .then(() => {
+            if (this.todos.length > 1) this.clickCallback(this.page)
+            else  this.clickCallback(this.pageCount)
+          })
     }
   },
    mounted () {
      this.getAllUsers();
 
+
   },
 
   components: {
     EventList,
-   TodoList, AddUser,Paginate, userAddingMenu, userProfile, eventAddingMenu
+   TodoList, AddUser,Paginate, userAddingMenu, userProfile, eventAddingMenu,
   }
 }
 </script>
@@ -207,6 +214,7 @@ export default {
   justify-content: center;
 
 }
+
 
 
 @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";

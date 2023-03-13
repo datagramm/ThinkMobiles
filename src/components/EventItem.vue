@@ -5,8 +5,8 @@
     <td>{{id}}</td>
     <td>{{event.tittle}}</td>
     <td>{{event.description}}</td>
-    <td>{{event.startEventData}}</td>
-    <td>{{event.endEventData}}</td>
+    <td>{{event.startEventDate}}</td>
+    <td>{{event.endEventDate}}</td>
   </tr>
 
 </template>

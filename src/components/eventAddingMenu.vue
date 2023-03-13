@@ -4,8 +4,6 @@
     <form @submit.prevent="onSubmit" class="form-adding-user">
       <input type="text" v-model="tittle" placeholder="@tittle">
       <input type="text" v-model="description" placeholder="@description">
-      <input type="text" v-model="startEventData" placeholder="@start Data Event">
-      <input type="text" v-model="endEventData" placeholder="@end Data Event">
 
       <div>
         <h5>Start event date</h5>
@@ -33,14 +31,17 @@
       </div>
       <input type="submit"  value="Send" class="submit">
     </form>
+    <showAlert  v-show=""/>
   </div>
 </template>
 
 <script>
 import $ from "jquery"
+import showAlert from "@/components/showAlert";
 
 export default {
   name: "eventAddingMenu",
+  components: {showAlert},
   props: {
     currentUser: {
       type: Object,
@@ -52,8 +53,6 @@ export default {
       items:[2023,2024],
       tittle: '',
       description: '',
-      startEventData: '',
-      endEventData: '',
       startEventYear:'',
       startEventMonth: '',
       startEventDay:  '',
@@ -67,8 +66,6 @@ export default {
       this.$emit('closeMenu', 'closeEventMenu');
       this.tittle = ''
       this.description = ''
-      this.startEventData = ''
-      this.endEventData = ''
       this.startEventYear = ''
       this.startEventMonth = ''
       this.startEventDay = ''
@@ -78,26 +75,28 @@ export default {
     },
     onSubmit() {
         console.log(this.startEventYear)
-      if ( this.tittle.trim() && this.description.trim() && this.startEventData.trim()
-      && this.endEventData.trim() && this.startEventYear.trim() && this.startEventMonth &&
+      if ( this.tittle.trim() && this.description.trim() && this.startEventYear.trim() && this.startEventMonth &&
           this.startEventDay.trim() && this.endEventYear.trim() && this.endEventMonth.trim()
           && this.endEventDay.trim()
       ) {
+
         $.post('http://localhost:3000/pushEvent', {
           currentUser: this.currentUser,
           event: {
             tittle: this.tittle,
             description: this.description,
-            startEventData: this.startEventData,
-            endEventData: this.endEventData,
+            startEventYear: this.startEventYear,
+            startEventMonth: this.startEventMonth,
+            startEventDay: this.startEventDay,
+            endEventYear: this.endEventYear,
+            endEventMonth: this.endEventMonth,
+            endEventDay: this.endEventDay,
           }
 
         }).then(event => {
           this.$emit('pushEvent', event);
           this.tittle = ''
           this.description = ''
-          this.startEventData = ''
-          this.endEventData = ''
           this.startEventYear = ''
           this.startEventMonth = ''
           this.startEventDay = ''
