@@ -32,6 +32,7 @@ export default {
          if (v == 0) {
            return 'not event available'
          }
+         else return  v
        }
     }
 

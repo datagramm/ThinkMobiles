@@ -31,7 +31,7 @@ const checkingEventDate = async (req, res) => {
             const currentStarEventDate = startEventYear.toString() + '/' + startEventMonth.toString() + '/' + startEventDay.toString();
             const currentEndEventDate = endEventYear.toString() + '/' + endEventMonth.toString() + '/' + endEventDay.toString();
 
-            console.log(currentStarEventDate, currentEndEventDate)
+
 
             const user = await User.findOne({
                 id: id,
@@ -70,16 +70,23 @@ const checkingEventDate = async (req, res) => {
                     }, {$inc: {eventCount: 1}, $push: {events: event}}, {new: true}).then(async (user) => {
                         if (user) {
 
+                            const now = new Date().setHours(0,0,0,0);
+                            let closest = {
+                                date: Infinity,
+                                closest: null,
+                            }
 
-                            const now = new Date(`${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`);
-                            let closest = Infinity;
+                          user.events.forEach( (event) => {
 
-                          const closestDate =  user.events.forEach( (event) => {
                                 const date = new Date(event.startEventDate);
-                                if (date >= now  && (date < new Date(closest) || date < closest)) {
-                                    return event.startEventDate;
+                                if (date >= now  && (date < new Date(closest.date) || date < closest.date)) {
+                                     closest = {
+                                         date: date,
+                                         closest: event.startEventDate
+                                     }
                                 }
                             });
+
 
 
                             await User.findOneAndUpdate({
@@ -87,8 +94,9 @@ const checkingEventDate = async (req, res) => {
                                 lastName: req.body.currentUser.lastName,
                                 phoneNumber: req.body.currentUser.phone,
                                 mail: req.body.currentUser.mail,
-                            },{firstEventDate: closestDate}).then(async(user) =>{
+                            },{firstEventDate:closest.closest}, {new: true}).then(async(user) =>{
                                 if (user){
+
                                     await res.setHeader('Access-Control-Allow-Origin', "*");
                                     res.send(event);                                }
                             })

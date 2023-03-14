@@ -73,7 +73,7 @@ export default {
   methods: {
     clickCallback(pageNum) {
       this.page = pageNum;
-      this.paginatedTodos = lodash.chunk(this.todos, 17);
+      this.paginatedTodos = lodash.chunk(this.todos, 5);
       console.log(pageNum);
       this.pageCount = this.paginatedTodos.length;
       if (this.todos.length === 1) this.paginatedTodos = this.paginatedTodos[pageNum]
@@ -108,8 +108,10 @@ export default {
       }
       console.log(this.showingAlert)
       this.Events.push(event);
+
+      this.clickCallback2(this.pageEventCount);
       this.getAllUsers();
-      this.clickCallback2(this.pageEventCount)
+
 
 
     },
@@ -160,7 +162,8 @@ export default {
         )})
           .then(() => {
             if (this.todos.length > 1) this.clickCallback(this.page)
-            else  this.clickCallback(this.pageCount)
+
+            else  this.clickCallback(0)
           })
     }
   },
