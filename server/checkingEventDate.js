@@ -69,8 +69,31 @@ const checkingEventDate = async (req, res) => {
                         mail: req.body.currentUser.mail,
                     }, {$inc: {eventCount: 1}, $push: {events: event}}, {new: true}).then(async (user) => {
                         if (user) {
-                            await res.setHeader('Access-Control-Allow-Origin', "*");
-                            res.send(event);
+
+
+                            const now = new Date(`${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}`);
+                            let closest = Infinity;
+
+                          const closestDate =  user.events.forEach( (event) => {
+                                const date = new Date(event.startEventDate);
+                                if (date >= now  && (date < new Date(closest) || date < closest)) {
+                                    return event.startEventDate;
+                                }
+                            });
+
+
+                            await User.findOneAndUpdate({
+                                firstName: req.body.currentUser.firstName,
+                                lastName: req.body.currentUser.lastName,
+                                phoneNumber: req.body.currentUser.phone,
+                                mail: req.body.currentUser.mail,
+                            },{firstEventDate: closestDate}).then(async(user) =>{
+                                if (user){
+                                    await res.setHeader('Access-Control-Allow-Origin', "*");
+                                    res.send(event);                                }
+                            })
+
+
                         }
                     })
 

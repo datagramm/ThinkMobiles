@@ -8,7 +8,7 @@
        <th>Phone</th>
        <th>Mail</th>
        <th>Count</th>
-       <th>first Data</th>
+       <th>Next Event Start</th>
      </tr>
      </thead>
      <TodoItem  v-for="(todo, id ) of todos" v-bind:todo="todo" v-bind:id="id" :key="todo"/>

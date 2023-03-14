@@ -3,8 +3,10 @@
    <div id="app">
     <div id="profile">
       <userProfile v-bind:currentUser="currentTodo"  @showMenu="showMenu"/>
-      <eventAddingMenu v-bind:currentUser="currentTodo"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
-      <EventList  v-bind:events="paginatedEvents"/>
+      <Transition>
+      <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
+      </Transition>
+      <EventList  v-bind:events="paginatedEvents" />
       <paginate class="paginate"
                 v-model="page2"
                 :page-count="pageEventCount"
@@ -20,7 +22,7 @@
     </div>
      <div id="rightSection">
        <AddUser @showMenu="showMenu"/>
-       <TodoList v-bind:todos="paginatedTodos"  @showUserProfile="showUserProfile"  @getCurrentUserEvents="getCurrentUserEvents"/>
+       <TodoList  v-bind:todos="paginatedTodos"  @showUserProfile="showUserProfile"  @getCurrentUserEvents="getCurrentUserEvents"/>
        <paginate class="paginate"
            v-model="page"
            :page-count="pageCount"
@@ -63,7 +65,7 @@ export default {
       pageCount: 0,
       pageEventCount: 0,
       showingMenu: false,
-      showingAler: false,
+      showingAlert: false,
       showingEvent: false,
       currentTodo: {},
     }
@@ -99,7 +101,12 @@ export default {
         this.clickCallback(this.pageCount)
     },
     pushEvent(event){
-      if (event.error) return console.log('this data is overlapping');
+      if (event.error) {
+        this.showingAlert = true
+        setTimeout(() => this.showingAlert = false, 2000)
+        return
+      }
+      console.log(this.showingAlert)
       this.Events.push(event);
       this.getAllUsers();
       this.clickCallback2(this.pageEventCount)
@@ -214,7 +221,16 @@ export default {
   justify-content: center;
 
 }
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
 
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
 
 
 @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";

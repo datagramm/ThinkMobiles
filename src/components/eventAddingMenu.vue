@@ -31,7 +31,9 @@
       </div>
       <input type="submit"  value="Send" class="submit">
     </form>
-    <showAlert  v-show=""/>
+    <Transition>
+    <showAlert  v-show="alert"/>
+    </Transition>
   </div>
 </template>
 
@@ -43,11 +45,16 @@ export default {
   name: "eventAddingMenu",
   components: {showAlert},
   props: {
+    alert: {
+      type: Boolean,
+      required: true,
+    },
     currentUser: {
       type: Object,
       required: true,
     }
   },
+
   data() {
     return {
       items:[2023,2024],
@@ -107,9 +114,11 @@ export default {
 
       }
     }
-  }
+  },
+
 
 }
+
 </script>
 
 <style scoped>
@@ -117,14 +126,15 @@ export default {
   z-index: 1000;
   left: 50%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   margin-left: -11%;
   padding: 7vh;
   position: fixed;
   border-radius: 3vh;
   width: 22%;
-  height: max-content;
+  height: fit-content;
   background: white;
   filter: drop-shadow(0 0 0.75rem grey);
 }
@@ -176,5 +186,14 @@ select {
 }
 h5{
   color: black;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
