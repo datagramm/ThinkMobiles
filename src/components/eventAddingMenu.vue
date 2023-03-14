@@ -32,7 +32,7 @@
       <input type="submit"  value="Send" class="submit">
     </form>
     <Transition>
-    <showAlert  v-show="alert"/>
+    <showAlert  v-show="alert || tooltip "/>
     </Transition>
   </div>
 </template>
@@ -57,6 +57,7 @@ export default {
 
   data() {
     return {
+      tooltip: false,
       items:[2023,2024],
       tittle: '',
       description: '',
@@ -86,6 +87,15 @@ export default {
           this.startEventDay.trim() && this.endEventYear.trim() && this.endEventMonth.trim()
           && this.endEventDay.trim()
       ) {
+
+        if ((new Date(`${this.startEventYear}/${this.startEventMonth}/${this.startEventDay}`).setHours(0,0,0,0) <
+         new Date().setHours(0,0,0,0)) || (new Date(`${this.endEventYear}/${this.endEventMonth}/${this.endEventDay}`).setHours(0,0,0,0) <
+            new Date().setHours(0,0,0,0)) || (new Date(`${this.startEventYear}/${this.startEventMonth}/${this.startEventDay}`).setHours(0,0,0,0) >
+             new Date(`${this.endEventYear}/${this.endEventMonth}/${this.endEventDay}` ).setHours(0,0,0,0))) {
+          this.tooltip = true
+          setTimeout(() => {this.tooltip = false},  1000);
+          return
+        }
 
         $.post('http://localhost:3000/pushEvent', {
           currentUser: this.currentUser,

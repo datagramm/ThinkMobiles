@@ -9,7 +9,10 @@ const bodyParser = require('body-parser');
 const User = require('./models/User');
 const events = require("events");
 const {checkingEventDate} = require("./checkingEventDate");
-
+const {validateSession} = require('./validateSession')
+const {getAllUsers} = require("./getAllUsers");
+const {pushUser} = require("./pushUser");
+const {getCurrentUserEvents} = require("./getCurrentUserEvents");
 mongoose.set('strictQuery', true);
 mongoose.connect(db).then(res => {
     console.log('Connected to DB');
@@ -31,28 +34,10 @@ app.use(bodyParser.json());
 
 
 
-app.get('/getAllUsers', async (req,res) => {
-    await User.find().then(async (users) => {
-        await res.setHeader('Access-Control-Allow-Origin', "*");
-         res.send(users);
-    })
-})
-
-app.post('/pushUser', async (req,res) => {
-    const newUser = await new User({firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, mail: req.body.mail, eventCount: 0, firstEventDate: 0}).save()
-    await res.setHeader('Access-Control-Allow-Origin', "*");
-    await res.send(newUser);
-    console.log(newUser)
-})
-
+app.get('/getAllUsers', validateSession, getAllUsers)
+app.post('/pushUser', pushUser)
 app.post('/pushEvent',  checkingEventDate);
-
-app.post('/getCurrentUserEvents',  async (req,res) => {
-    await  User.findOne({firstName: req.body.firstName, lastName: req.body.lastName ,phoneNumber: req.body.phone, mail:req.body.mail})
-        .then(async(user) => {
-            await res.setHeader('Access-Control-Allow-Origin', "*");
-            res.send(user)})
-})
+app.post('/getCurrentUserEvents',  getCurrentUserEvents)
 
 
 server.listen(port, () => {
