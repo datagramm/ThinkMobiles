@@ -19,7 +19,7 @@ const validateSession = async (req,res,next) =>{
         if (err){
             const session = await Session.findOne({"refreshToken.id": refreshTokenId})
             console.log(session)
-            req.body.currentUserName = session.userName
+
             if (!session) {
                 await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
                 await res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -27,6 +27,7 @@ const validateSession = async (req,res,next) =>{
                 res.send({users:false, accessDenied: false})
 
             } else {
+                req.body.currentUserName = session.userName
 
                 const newRefreshTokenId = await uuid.v4();
                 await Session.findOneAndUpdate({"refreshToken.id": refreshTokenId},
