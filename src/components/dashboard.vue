@@ -1,9 +1,13 @@
 
 <template>
   <div id="app">
+
+   <div class="menu"><logOut  class="logout-button"/>
+    <h3> {{currentClientName}}, welcome to dashboard!</h3>
+   </div>
+
+    <div id="dashboard">
     <div id="profile">
-      <logOut  class="logout-button"/>
-      <h3 style="position: absolute; left: 20vh; top: 5vh;">{{currentClientName}}</h3>
       <userProfile v-bind:currentUser="currentTodo"  @showMenu="showMenu"/>
 
       <Transition>
@@ -40,6 +44,7 @@
       </paginate>
     </div>
     <userAddingMenu v-show="showingMenu" @closeMenu="closeMenu"  @pushUser="pushUser" />
+    </div>
   </div>
 </template>
 
@@ -178,8 +183,8 @@ export default {
 
       $.get('http://localhost:3000/getAllUsers').then(async users => {
         this.todos = []
-
-        this.currentClientName =  users.currentUserName;
+        console.log(users.currentUser)
+        this.currentClientName =  users.currentUser;
         users.users.forEach(user => this.todos.push(user)
         )})
           .then(() => {
@@ -203,15 +208,27 @@ export default {
 </script>
 
 <style scoped>
-#app {
+#app{
+  margin: 2vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.menu{
+
+  display: flex;
+  align-items: center;
+  gap: 1vh;
+
+}
+#dashboard {
+  margin-top: 1vh;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  height: 99vh;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   box-sizing: border-box;
-  padding: 1vh;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -221,7 +238,7 @@ export default {
 }
 #profile {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  margin: 1vh;
+
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -254,7 +271,7 @@ export default {
   border: none;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   border-radius: 1vh;
-  position: absolute;
+
   left: 5vh;
   top: 5vh;
 }

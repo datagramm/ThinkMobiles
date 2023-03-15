@@ -8,17 +8,21 @@ const validateSession = async (req,res,next) =>{
 
     try {
         const access = verify(accessTokenId, process.env.SECRET_JWT)
-        if(access)
-           await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-           await res.header("Access-Control-Allow-Headers", "X-Requested-With");
-           await res.header("Access-Control-Allow-Credentials", true)
+        if(access) {
+            const session = await Session.findOne({"refreshToken.id": refreshTokenId})
+            await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+            await res.header("Access-Control-Allow-Headers", "X-Requested-With");
+            await res.header("Access-Control-Allow-Credentials", true)
             req.body.accessDenied = true;
+            const userName = await session.userName
+            req.body.currentUserName = userName
             next()
+        }
     }
     catch (err){
         if (err){
             const session = await Session.findOne({"refreshToken.id": refreshTokenId})
-            console.log(session)
+
 
             if (!session) {
                 await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
@@ -27,7 +31,8 @@ const validateSession = async (req,res,next) =>{
                 res.send({users:false, accessDenied: false})
 
             } else {
-                req.body.currentUserName = session.userName
+                const userName = await session.userName
+                req.body.currentUserName = userName
 
                 const newRefreshTokenId = await uuid.v4();
                 await Session.findOneAndUpdate({"refreshToken.id": refreshTokenId},
@@ -42,7 +47,7 @@ const validateSession = async (req,res,next) =>{
                     await res.cookie('accessTokenId', newAccessTokenId, { httpOnly: true, sameSite: 'none', secure: true},);
                     await res.cookie('refreshTokenId', newRefreshTokenId, {maxAge: 5184000000, httpOnly: true, sameSite: 'none', secure: true},);
                     req.body.accessDenied = true;
-                    req.body.currUserName = true
+
 
                     next()
                 })
