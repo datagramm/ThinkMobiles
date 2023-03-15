@@ -97,6 +97,13 @@ export default {
           return
         }
 
+        $.ajaxSetup({
+          crossDomain: true,
+          xhrFields: {
+            withCredentials: true
+          },
+        });
+
         $.post('http://localhost:3000/pushEvent', {
           currentUser: this.currentUser,
           event: {

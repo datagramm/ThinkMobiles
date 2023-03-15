@@ -35,6 +35,12 @@ export default {
     },
     onSubmit() {
       if (this.firstName.trim() && this.mail.trim() && this.lastName.trim() && this.phoneNumber.trim()) {
+        $.ajaxSetup({
+          crossDomain: true,
+          xhrFields: {
+            withCredentials: true
+          },
+        });
         $.post('http://localhost:3000/pushUser', {
           firstName: this.firstName,
           lastName: this.lastName,

@@ -2,7 +2,10 @@
 <template>
   <div id="app">
     <div id="profile">
+      <logOut  class="logout-button"/>
+      <h3 style="position: absolute; left: 20vh; top: 5vh;">{{currentClientName}}</h3>
       <userProfile v-bind:currentUser="currentTodo"  @showMenu="showMenu"/>
+
       <Transition>
         <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
       </Transition>
@@ -51,6 +54,7 @@ import userAddingMenu from "@/components/userAddingMenu.vue";
 import userProfile from "@/components/userProfile.vue";
 import EventList from "@/components/eventList.vue";
 import eventAddingMenu from "@/components/eventAddingMenu.vue";
+import logOut from "@/components/logout.vue"
 
 export default {
   name: 'dashBoard',
@@ -69,6 +73,7 @@ export default {
       showingEvent: false,
       currentTodo: {},
       accessToRoute: false,
+      currentClientName: '',
     }
   },
 
@@ -140,6 +145,12 @@ export default {
 
     getCurrentUserEvents(user){
 
+      $.ajaxSetup({
+        crossDomain: true,
+        xhrFields: {
+          withCredentials: true
+        },
+      });
       $.post('http://localhost:3000/getCurrentUserEvents', {
         id: user[0].textContent,
         firstName: user[1].textContent,
@@ -158,8 +169,17 @@ export default {
     },
     getAllUsers(){
 
-      $.get('http://localhost:3000/getAllUsers').then(users => {
+      $.ajaxSetup({
+        crossDomain: true,
+        xhrFields: {
+          withCredentials: true
+        },
+      });
+
+      $.get('http://localhost:3000/getAllUsers').then(async users => {
         this.todos = []
+
+        this.currentClientName =  users.currentUserName;
         users.users.forEach(user => this.todos.push(user)
         )})
           .then(() => {
@@ -177,7 +197,7 @@ export default {
 
   components: {
     EventList,
-    TodoList, AddUser,Paginate, userAddingMenu, userProfile, eventAddingMenu,
+    TodoList, AddUser,Paginate, userAddingMenu, userProfile, eventAddingMenu, logOut
   }
 }
 </script>
@@ -185,6 +205,7 @@ export default {
 <style scoped>
 #app {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   height: 99vh;
   justify-content: space-between;
@@ -205,7 +226,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 50%;
+  flex-grow: 1;
   height: 70%;
   background: lightblue;
   border-radius: 3vh;
@@ -216,7 +237,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  width: 50%;
+  flex-grow: 1;
   height: 70%;
   border-radius: 3vh;
 }
@@ -225,6 +246,17 @@ export default {
   display: flex;
   justify-content: center;
 
+}
+.logout-button {
+  padding: 1vh;
+  color: white;
+  background: darkgrey;
+  border: none;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  border-radius: 1vh;
+  position: absolute;
+  left: 5vh;
+  top: 5vh;
 }
 .v-enter-active,
 .v-leave-active {

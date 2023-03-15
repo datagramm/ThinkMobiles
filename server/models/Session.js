@@ -7,22 +7,13 @@ const sessionSchema = new Schema({
         required: true,
     },
 
-    sessionActivationLink : {
-        type: String,
-        required: true,
-    },
-    isActivated:{
-        type: Boolean,
-        required: true,
-    },
-
     refreshToken: {
         id: {
             type:String,
             required: true,
         },
         timeExp: {
-            type: Number,
+            type: String,
             required: true,
         }
     }

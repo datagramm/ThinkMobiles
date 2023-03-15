@@ -6,13 +6,16 @@ const mongoose = require('mongoose');
 const db = process.env.SECRET_MONGO_URI;
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const User = require('./models/User');
-const events = require("events");
 const {checkingEventDate} = require("./checkingEventDate");
 const {validateSession} = require('./validateSession')
 const {getAllUsers} = require("./getAllUsers");
 const {pushUser} = require("./pushUser");
 const {getCurrentUserEvents} = require("./getCurrentUserEvents");
+const {registerUser} = require('./registerUser')
+const {login} = require('./login')
+const {createSession} = require("./createSession");
+const {logout} = require("./logout");
+
 mongoose.set('strictQuery', true);
 mongoose.connect(db).then(res => {
     console.log('Connected to DB');
@@ -35,9 +38,12 @@ app.use(bodyParser.json());
 
 
 app.get('/getAllUsers', validateSession, getAllUsers)
-app.post('/pushUser', pushUser)
-app.post('/pushEvent',  checkingEventDate);
-app.post('/getCurrentUserEvents',  getCurrentUserEvents)
+app.get('/logout', logout)
+app.post('/pushUser', validateSession, pushUser)
+app.post('/pushEvent', validateSession,  checkingEventDate);
+app.post('/getCurrentUserEvents', validateSession,  getCurrentUserEvents)
+app.post('/registration', registerUser);
+app.post('/login', login, createSession);
 
 
 server.listen(port, () => {

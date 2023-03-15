@@ -1,18 +1,17 @@
 <template>
   <div class="container">
-<form v-on:submit="registerUser" class="registration-form">
-  <h4>Registration form</h4>
-  <input type="text" v-model="login" placeholder="@login">
-  <input type="text" v-model="mail" placeholder="@mail">
-  <input type="password" v-model="password" placeholder="@password">
-  <button type="submit">Sign up</button>
-  <router-link to="/login" style="color: white; text-decoration: none">
-  <button type="button" style="background: cornflowerblue" >Sign in</button>
-  </router-link>
-  <Transition>
-    <showTooltip  v-show="showingTooltip " v-bind:tooltipText="tooltipText"/>
-  </Transition>
-</form>
+    <form v-on:submit="loginUser" class="registration-form">
+      <h4>Login form</h4>
+      <input type="text" v-model="login" placeholder="@login">
+      <input type="password" v-model="password" placeholder="@password">
+      <button type="submit">Sign in</button>
+      <router-link to="/registration" style="color: white; text-decoration: none">
+        <button type="button" style="background: cornflowerblue" >Sign up</button>
+      </router-link>
+      <Transition>
+        <showTooltip  v-show="showingTooltip " v-bind:tooltipText="tooltipText"/>
+      </Transition>
+    </form>
   </div>
 </template>
 
@@ -21,40 +20,45 @@ import $ from "jquery"
 import ShowTooltip from "@/components/showTooltip";
 import router from "@/router";
 export default {
-  name: "registrationForm"
+  name: "loginMenu"
   ,
+
   components: {ShowTooltip},
   data() {
     return{
       login: '',
-      mail: '',
       password: '',
       showingTooltip: false,
       tooltipText: '',
     }
   },
   methods: {
-    showTooltip(){
-      this.tooltipText = 'You have successfully registered'
+    showTooltip(message){
+      this.tooltipText = message
       this.showingTooltip = true
       setTimeout(() => {
         this.showingTooltip = false
       }, 1000)
     },
-    registerUser(){
-      if (this.login.trim() && this.mail.trim() && this.password.trim()){
-        $.post('http://localhost:3000/registration', {
+    loginUser(){
+      if (this.login.trim() && this.password.trim()){
+        $.ajaxSetup({
+          crossDomain: true,
+          xhrFields: {
+            withCredentials: true
+          },
+        });
+
+        $.post('http://localhost:3000/login', {
           username: this.login,
           password: this.password,
-          mail: this.mail,
-        }).then(res => {
+        },
+        ).then(res => {
           this.login = ''
-          this.mail = ''
           this.password = ''
-          if (res.err) return alert(`Something wrong, errorName: ${res.err.name}`)
+          if (res.err)  this.showTooltip(res.message)
           else {
-            this.showTooltip()
-            setTimeout(() => {router.push({path: '/login'})}, 1000)
+            setTimeout(() => {router.push({path: '/'})}, 1000)
           }
         })
       }
@@ -95,12 +99,12 @@ button {
   width: fit-content;
 }
 
-    .container {
-      width: 100%;
-      height: 100vh;
+.container {
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
-      flex-direction: column;
+  flex-direction: column;
   align-items: center;
 }
 .v-enter-active,

@@ -51,7 +51,9 @@ const checkingEventDate = async (req, res) => {
                 })
 
                 if (checkIs) {
-                    await res.setHeader('Access-Control-Allow-Origin', "*");
+                    await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+                    await res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                    await res.header("Access-Control-Allow-Credentials", true)
                     res.send({error: true});
                 } else {
                     const event = {
@@ -97,7 +99,9 @@ const checkingEventDate = async (req, res) => {
                             },{firstEventDate:closest.closest}, {new: true}).then(async(user) =>{
                                 if (user){
 
-                                    await res.setHeader('Access-Control-Allow-Origin', "*");
+                                    await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+                                    await res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                                    await res.header("Access-Control-Allow-Credentials", true)
                                     res.send(event);                                }
                             })
 
