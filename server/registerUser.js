@@ -9,11 +9,15 @@ const registerUser = async (req, res) => {
             mail: mail,
             password: hash,
         }).save().then( async () => {
-            await res.setHeader('Access-Control-Allow-Origin', "*");
+            await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+            await res.header("Access-Control-Allow-Headers", "X-Requested-With");
+            await res.header("Access-Control-Allow-Credentials", true)
             res.send({success: true, err: false});
         }).catch(async err => {
             if (err) {
-                await res.setHeader('Access-Control-Allow-Origin', "*");
+                await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+                await res.header("Access-Control-Allow-Headers", "X-Requested-With");
+                await res.header("Access-Control-Allow-Credentials", true)
                 res.status(400).send({success: false, err: err});
             }
         });

@@ -43,6 +43,14 @@ export default {
     },
     registerUser(){
       if (this.login.trim() && this.mail.trim() && this.password.trim()){
+
+        $.ajaxSetup({
+          crossDomain: true,
+          xhrFields: {
+            withCredentials: true
+          },
+        });
+
         $.post('http://localhost:3000/registration', {
           username: this.login,
           password: this.password,
