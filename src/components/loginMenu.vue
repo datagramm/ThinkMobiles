@@ -58,7 +58,7 @@ export default {
           this.password = ''
           if (res.err)  this.showTooltip(res.message)
           else {
-            setTimeout(() => {router.push({path: '/'})}, 1000)
+            setTimeout(() => {router.push({path: '/dashboard'})}, 1000)
           }
         })
       }

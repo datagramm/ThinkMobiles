@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 const mongoose = require('mongoose');
 const db = process.env.SECRET_MONGO_URI;
+const cors = require('cors');
+const corsOption = require('../server/corsOption')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const {checkingEventDate} = require("./checkingEventDate");
@@ -17,7 +19,7 @@ const {createSession} = require("./createSession");
 const {logout} = require("./logout");
 
 mongoose.set('strictQuery', true);
-mongoose.connect(db).then(res => {
+mongoose.connect(db).then(() => {
     console.log('Connected to DB');
 })
 
@@ -34,6 +36,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use(cors(corsOption))
 
 
 

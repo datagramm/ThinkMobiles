@@ -6,7 +6,7 @@ import loginMenu from "@/components/loginMenu";
 export default createRouter({
     history: createWebHashHistory(),
     routes: [
-        {path: '/',
+        {path: '/dashboard',
             component: dashBoard,
             beforeEnter(to,from,next){
 
