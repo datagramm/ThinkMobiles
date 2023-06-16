@@ -13,14 +13,10 @@ const createSession = async (req, res) => {
             timeExp: '60d',
         }
     }).save();
-     console.log(accessTokenId)
 
-    await res.cookie('accessTokenId', accessTokenId,{  httpOnly: true, sameSite: 'none', secure: true },);
-    await res.cookie('refreshTokenId', refreshTokenId,{ maxAge: 5184000000, httpOnly: true, sameSite: 'none',secure: true},);
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Credentials", true)
-    await res.send({err: false})
+    res.cookie('accessTokenId', accessTokenId,{  httpOnly: true, sameSite: 'none', secure: true },);
+    res.cookie('refreshTokenId', refreshTokenId,{ maxAge: 5184000000, httpOnly: true, sameSite: 'none',secure: true},);
+    res.send({err: false})
 }
 
 module.exports = {createSession}

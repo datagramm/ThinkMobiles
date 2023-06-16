@@ -31,7 +31,6 @@ const getCurreneEventForAllUsers = async (users) => {
 const getAllUsers = async (req,res) => {
 
     await User.find().then(async (users) => {
-        await res.setHeader('Access-Control-Allow-Origin', "http://localhost:8080");
         const completeUsers = await getCurreneEventForAllUsers(users)
         res.send({users:completeUsers, accessDenied: req.body.accessDenied, currentUser: req.body.currentUserName});
     })
