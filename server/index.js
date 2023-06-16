@@ -5,7 +5,7 @@ dotenv.config();
 const mongoose = require('mongoose');
 const db = process.env.SECRET_MONGO_URI;
 const cors = require('cors');
-const corsOption = require('../server/corsOption')
+const {corsOption} = require('../server/corsOption')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const {checkingEventDate} = require("./checkingEventDate");
