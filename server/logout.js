@@ -1,7 +1,7 @@
 const Session = require('./models/Session')
 
-const logout =  async (req,res) => {
-    const refreshTokenId = await req.cookies["refreshTokenId"];
+const logout = (req,res) => {
+    const refreshTokenId = req.cookies["refreshTokenId"];
     Session.findOneAndDelete({"refreshToken.id": refreshTokenId});
 
     res.clearCookie('refreshTokenId');

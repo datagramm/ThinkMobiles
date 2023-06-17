@@ -12,9 +12,10 @@ const checkingEventDate = async (req, res) => {
         endEventYear,
         endEventMonth,
         endEventDay
-    } = await req.body.event;
+    } =  req.body.event;
 
-    let {id, firstName, lastName, phone, mail} = await req.body.currentUser;
+    let {id, firstName, lastName, phone, mail} =  req.body.currentUser;
+
     if (!isNaN(+startEventMonth) && !isNaN(+startEventYear) && !isNaN(+startEventDay)
         && !isNaN(+endEventMonth) && !isNaN(+endEventYear) && !isNaN(+endEventDay)
     ) {
@@ -50,12 +51,8 @@ const checkingEventDate = async (req, res) => {
                     }
                 })
 
-                if (checkIs) {
-                    await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-                    await res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    await res.header("Access-Control-Allow-Credentials", true)
-                    res.send({error: true});
-                } else {
+                if (checkIs) res.send({error: true});
+                 else {
                     const event = {
                         tittle: req.body.event.tittle,
                         description: req.body.event.description,
@@ -69,7 +66,7 @@ const checkingEventDate = async (req, res) => {
                         lastName: req.body.currentUser.lastName,
                         phoneNumber: req.body.currentUser.phone,
                         mail: req.body.currentUser.mail,
-                    }, {$inc: {eventCount: 1}, $push: {events: event}}, {new: true}).then(async (user) => {
+                    }, {$inc: {eventCount: 1}, $push: {events: event}}, {new: true}).then( (user) => {
                         if (user) {
 
                             const now = new Date().setHours(0,0,0,0);
@@ -89,22 +86,14 @@ const checkingEventDate = async (req, res) => {
                                 }
                             });
 
-
-
-                            await User.findOneAndUpdate({
+                             User.findOneAndUpdate({
                                 firstName: req.body.currentUser.firstName,
                                 lastName: req.body.currentUser.lastName,
                                 phoneNumber: req.body.currentUser.phone,
                                 mail: req.body.currentUser.mail,
                             },{firstEventDate:closest.closest}, {new: true}).then(async(user) =>{
-                                if (user){
-
-                                    await res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-                                    await res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                                    await res.header("Access-Control-Allow-Credentials", true)
-                                    res.send(event);                                }
+                                if (user) res.send(event);
                             })
-
 
                         }
                     })

@@ -1,12 +1,12 @@
 const Session = require('./models/Session')
 const {sign} = require('jsonwebtoken')
 const uuid = require("uuid");
-const createSession = async (req, res) => {
+const createSession =  (req, res) => {
 
 
-    const accessTokenId = await sign({login: req.body.userName}, process.env.SECRET_JWT, {expiresIn: '10s'})
-    const refreshTokenId = await uuid.v4();
-     await new Session({
+    const accessTokenId = sign({login: req.body.userName}, process.env.SECRET_JWT, {expiresIn: '10s'})
+    const refreshTokenId =  uuid.v4();
+    new Session({
         userName: req.body.userName,
         refreshToken: {
             id: refreshTokenId,

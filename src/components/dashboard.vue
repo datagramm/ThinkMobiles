@@ -60,6 +60,7 @@ import userProfile from "@/components/userProfile.vue";
 import EventList from "@/components/eventList.vue";
 import eventAddingMenu from "@/components/eventAddingMenu.vue";
 import logOut from "@/components/logout.vue"
+import {request} from "@/api/requests";
 
 export default {
   name: 'dashBoard',
@@ -148,30 +149,23 @@ export default {
       if (value === 'closeEventMenu') this.showingEvent = false
     },
 
-    getCurrentUserEvents(user){
+    async getCurrentUserEvents(user){
 
-      $.ajaxSetup({
-        crossDomain: true,
-        xhrFields: {
-          withCredentials: true
-        },
-      });
-      $.post('http://localhost:3000/getCurrentUserEvents', {
-        id: user[0].textContent,
-        firstName: user[1].textContent,
-        lastName: user[2].textContent,
-        phone: user[3].textContent,
-        mail: user[4].textContent,
-      }).then(user => {
+      const currentUser = await request('/getCurrentUserEvents', 'POST',
+          {
+            id: user[0].textContent,
+            firstName: user[1].textContent,
+            lastName: user[2].textContent,
+            phone: user[3].textContent,
+            mail: user[4].textContent,
+          }
+      )
+      this.Events = currentUser.events
+      this.clickCallback2(1)
 
-        this.Events = user.events;
-      }).then(() =>{
-
-        this.clickCallback2(1)
-
-      })
 
     },
+
     getAllUsers(){
 
       $.ajaxSetup({
