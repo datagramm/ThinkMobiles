@@ -151,7 +151,7 @@ export default {
 
     async getCurrentUserEvents(user){
 
-      const currentUser = await request('/getCurrentUserEvents', 'POST',
+      const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
           {
             id: user[0].textContent,
             firstName: user[1].textContent,
@@ -168,7 +168,7 @@ export default {
 
     async getAllUsers(){
       this.todos = []
-      const allUsers = await request('/getAllUsers', 'GET')
+      const allUsers = await request('/dashboard/getAllUsers', 'POST')
       this.currentClientName =  allUsers.currentUser;
       allUsers.users.forEach(user => this.todos.push(user))
       if (this.todos.length > 1) this.clickCallback(this.page)

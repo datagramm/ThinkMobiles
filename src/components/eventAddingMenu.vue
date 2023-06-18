@@ -98,7 +98,7 @@ export default {
           return
         }
 
-        const event = await request('/pushEvent', 'POST', {
+        const event = await request('/dashboard/pushEvent', 'POST', {
           currentUser: this.currentUser,
           event: {
             tittle: this.tittle,

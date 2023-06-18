@@ -36,7 +36,7 @@ export default {
    async onSubmit() {
       if (this.firstName.trim() && this.mail.trim() && this.lastName.trim() && this.phoneNumber.trim()) {
 
-        const pushUserResult = await request('/pushUser', 'POST', {
+        const pushUserResult = await request('/dashboard/pushUser', 'POST', {
           firstName: this.firstName,
           lastName: this.lastName,
           mail: this.mail,

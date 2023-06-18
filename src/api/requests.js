@@ -11,7 +11,7 @@ export const request = async (url, method, data = null) => {
             },
         });
         if (data && method === 'POST')  return  await  $.post(`${developmentURL}${url}`, data);
-        if (data === null && method === 'GET') return  await $.get(`${developmentURL}${url}`)
+        if (method === 'GET') return  await $.get(`${developmentURL}${url}`)
 
     }
     catch (err){

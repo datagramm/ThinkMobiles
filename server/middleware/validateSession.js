@@ -1,6 +1,6 @@
 const {sign, verify} = require('jsonwebtoken')
 const uuid = require('uuid')
-const Session = require('./models/Session');
+const Session = require('../models/Session');
 
 const validateSession = async (req,res,next) =>{
     const accessTokenId =  req.cookies["accessTokenId"];

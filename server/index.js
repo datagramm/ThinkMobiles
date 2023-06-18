@@ -8,11 +8,7 @@ const cors = require('cors');
 const {corsOption} = require('../server/corsOption')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const {checkingEventDate} = require("./checkingEventDate");
-const {validateSession} = require('./validateSession')
-const {getAllUsers} = require("./getAllUsers");
-const {pushUser} = require("./pushUser");
-const {getCurrentUserEvents} = require("./getCurrentUserEvents");
+const dashboardRoutes = require('./routers/dashboardRoutes')
 const userAuthoRoutes = require('./routers/userAuthoRoutes')
 const {logout} = require("./logout");
 
@@ -35,14 +31,16 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors(corsOption))
+
+app.use('/dashboard', dashboardRoutes)
 app.use('/authorization', userAuthoRoutes)
 
 
-app.get('/getAllUsers', validateSession, getAllUsers)
+
 app.get('/logout', logout)
-app.post('/pushUser', validateSession, pushUser)
-app.post('/pushEvent', validateSession,  checkingEventDate);
-app.post('/getCurrentUserEvents', validateSession,  getCurrentUserEvents)
+
+
+
 
 
 // app.post('/registration', registerUser);
