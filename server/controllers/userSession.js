@@ -1,4 +1,4 @@
-const Session = require('./models/Session')
+const Session = require('../models/Session')
 const {sign} = require('jsonwebtoken')
 const uuid = require("uuid");
 const createSession =  (req, res) => {

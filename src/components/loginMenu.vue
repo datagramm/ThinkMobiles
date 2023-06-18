@@ -43,7 +43,7 @@ export default {
     async loginUser(){
       if (this.login.trim() && this.password.trim()){
 
-        const loginUserResult = await request('/login', 'POST', {
+        const loginUserResult = await request('/authorization/login', 'POST', {
           username: this.login,
           password: this.password,
         })

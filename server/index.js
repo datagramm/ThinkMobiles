@@ -13,9 +13,7 @@ const {validateSession} = require('./validateSession')
 const {getAllUsers} = require("./getAllUsers");
 const {pushUser} = require("./pushUser");
 const {getCurrentUserEvents} = require("./getCurrentUserEvents");
-const {registerUser} = require('./registerUser')
-const {login} = require('./login')
-const {createSession} = require("./createSession");
+const userAuthoRoutes = require('./routers/userAuthoRoutes')
 const {logout} = require("./logout");
 
 mongoose.set('strictQuery', true);
@@ -37,7 +35,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(cors(corsOption))
-
+app.use('/authorization', userAuthoRoutes)
 
 
 app.get('/getAllUsers', validateSession, getAllUsers)
@@ -45,8 +43,10 @@ app.get('/logout', logout)
 app.post('/pushUser', validateSession, pushUser)
 app.post('/pushEvent', validateSession,  checkingEventDate);
 app.post('/getCurrentUserEvents', validateSession,  getCurrentUserEvents)
-app.post('/registration', registerUser);
-app.post('/login', login, createSession);
+
+
+// app.post('/registration', registerUser);
+// app.post('/login', login, createSession);
 
 
 server.listen(port, () => {

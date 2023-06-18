@@ -44,7 +44,7 @@ export default {
    async registerUser(){
       if (this.login.trim() && this.mail.trim() && this.password.trim()){
 
-       const registrationResult = await request('/registration', 'POST', {
+       const registrationResult = await request('/authorization/registration', 'POST', {
          username: this.login,
          password: this.password,
          mail: this.mail,
