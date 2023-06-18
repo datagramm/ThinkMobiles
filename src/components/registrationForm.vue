@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import $ from "jquery"
+import {request} from "@/api/requests";
 import ShowTooltip from "@/components/showTooltip";
 import router from "@/router";
 export default {
@@ -41,30 +41,25 @@ export default {
         this.showingTooltip = false
       }, 1000)
     },
-    registerUser(){
+   async registerUser(){
       if (this.login.trim() && this.mail.trim() && this.password.trim()){
 
-        $.ajaxSetup({
-          crossDomain: true,
-          xhrFields: {
-            withCredentials: true
-          },
-        });
+       const registrationResult = await request('/registration', 'POST', {
+         username: this.login,
+         password: this.password,
+         mail: this.mail,
+       })
 
-        $.post('http://localhost:3000/registration', {
-          username: this.login,
-          password: this.password,
-          mail: this.mail,
-        }).then(res => {
-          this.login = ''
-          this.mail = ''
-          this.password = ''
-          if (res.err) return alert(`Something wrong, errorName: ${res.err.name}`)
-          else {
-            this.showTooltip()
-            setTimeout(() => {router.push({path: '/login'})}, 1000)
-          }
-        })
+        this.login = ''
+        this.mail = ''
+        this.password = ''
+
+        if (registrationResult.err) return alert(`Something wrong, errorName: ${registrationResult.err.name}`)
+        else {
+          this.showTooltip()
+          setTimeout(() => {router.push({path: '/login'})}, 1000)
+        }
+
       }
 
     }

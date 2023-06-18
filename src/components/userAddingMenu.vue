@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import $ from "jquery"
+import {request} from "@/api/requests";
 
 export default {
   name: "userAddingMenu",
@@ -33,28 +33,21 @@ export default {
       this.mail = ''
       this.phoneNumber = ''
     },
-    onSubmit() {
+   async onSubmit() {
       if (this.firstName.trim() && this.mail.trim() && this.lastName.trim() && this.phoneNumber.trim()) {
-        $.ajaxSetup({
-          crossDomain: true,
-          xhrFields: {
-            withCredentials: true
-          },
-        });
-        $.post('http://localhost:3000/pushUser', {
+
+        const pushUserResult = await request('/pushUser', 'POST', {
           firstName: this.firstName,
           lastName: this.lastName,
           mail: this.mail,
           phoneNumber: this.phoneNumber
-
-        }).then(res => {
-          console.log(res);
-          this.$emit('pushUser', res);
-          this.firstName = ''
-          this.lastName = ''
-          this.mail = ''
-          this.phoneNumber = ''
         })
+
+        this.$emit('pushUser', pushUserResult);
+        this.firstName = ''
+        this.lastName = ''
+        this.mail = ''
+        this.phoneNumber = ''
 
       }
     }

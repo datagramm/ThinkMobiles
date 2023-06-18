@@ -50,7 +50,7 @@
 
 <script>
 
-import $ from 'jquery';
+
 import lodash from 'lodash';
 import TodoList from "@/components/TodoList.vue";
 import AddUser from "@/components/addUser.vue";
@@ -166,26 +166,14 @@ export default {
 
     },
 
-    getAllUsers(){
+    async getAllUsers(){
+      this.todos = []
+      const allUsers = await request('/getAllUsers', 'GET')
+      this.currentClientName =  allUsers.currentUser;
+      allUsers.users.forEach(user => this.todos.push(user))
+      if (this.todos.length > 1) this.clickCallback(this.page)
+      else  this.clickCallback(0)
 
-      $.ajaxSetup({
-        crossDomain: true,
-        xhrFields: {
-          withCredentials: true
-        },
-      });
-
-      $.get('http://localhost:3000/getAllUsers').then(async users => {
-        this.todos = []
-        console.log(users.currentUser)
-        this.currentClientName =  users.currentUser;
-        users.users.forEach(user => this.todos.push(user)
-        )})
-          .then(() => {
-            if (this.todos.length > 1) this.clickCallback(this.page)
-
-            else  this.clickCallback(0)
-          })
     }
   },
   mounted () {

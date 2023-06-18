@@ -3,25 +3,17 @@
 </template>
 
 <script>
-import $ from "jquery";
+
+import {request} from "@/api/requests";
 import router from "@/router";
 
 export default {
   name: "logOut",
   methods: {
-    logout() {
-      $.ajaxSetup({
-        crossDomain: true,
-        xhrFields: {
-          withCredentials: true
-        },
-      });
-
-      $.get('http://localhost:3000/logout').then(res => {
-        if (res.logout) {
-          router.push({path: '/registration'})
-        }
-      })
+    async logout() {
+      const logoutResult = await request('/logout', 'GET')
+      if (logoutResult.logout) await router.push({path: '/registration'})
+      
     }
   }
 }

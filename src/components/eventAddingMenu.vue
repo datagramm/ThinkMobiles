@@ -38,8 +38,9 @@
 </template>
 
 <script>
-import $ from "jquery"
+
 import showAlert from "@/components/showAlert";
+import {request} from "@/api/requests";
 
 export default {
   name: "eventAddingMenu",
@@ -81,8 +82,8 @@ export default {
       this.endEventMonth = ''
       this.endEventDay = ''
     },
-    onSubmit() {
-        console.log(this.startEventYear)
+    async onSubmit() {
+
       if ( this.tittle.trim() && this.description.trim() && this.startEventYear.trim() && this.startEventMonth &&
           this.startEventDay.trim() && this.endEventYear.trim() && this.endEventMonth.trim()
           && this.endEventDay.trim()
@@ -97,14 +98,7 @@ export default {
           return
         }
 
-        $.ajaxSetup({
-          crossDomain: true,
-          xhrFields: {
-            withCredentials: true
-          },
-        });
-
-        $.post('http://localhost:3000/pushEvent', {
+        const event = await request('/pushEvent', 'POST', {
           currentUser: this.currentUser,
           event: {
             tittle: this.tittle,
@@ -117,17 +111,17 @@ export default {
             endEventDay: this.endEventDay,
           }
 
-        }).then(event => {
-          this.$emit('pushEvent', event);
-          this.tittle = ''
-          this.description = ''
-          this.startEventYear = ''
-          this.startEventMonth = ''
-          this.startEventDay = ''
-          this.endEventYear = ''
-          this.endEventMonth = ''
-          this.endEventDay = ''
         })
+
+        this.$emit('pushEvent', event);
+        this.tittle = ''
+        this.description = ''
+        this.startEventYear = ''
+        this.startEventMonth = ''
+        this.startEventDay = ''
+        this.endEventYear = ''
+        this.endEventMonth = ''
+        this.endEventDay = ''
 
       }
     }
