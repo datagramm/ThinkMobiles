@@ -29,13 +29,13 @@
     </div>
     <div id="rightSection">
       <AddUser @showMenu="showMenu"/>
-      <TodoList  v-bind:todos="paginatedTodos"  @showUserProfile="showUserProfile"  @getCurrentUserEvents="getCurrentUserEvents"/>
+      <TodoList  v-bind:todos="todos"  @showUserProfile="showUserProfile"  @getCurrentUserEvents="getCurrentUserEvents"/>
       <paginate class="paginate"
                 v-model="page"
                 :page-count="pageCount"
                 :page-range="3"
                 :margin-pages="1"
-                :click-handler="clickCallback"
+                :click-handler="getAllUsers"
                 :prev-text="'Prev'"
                 :next-text="'Next'"
                 :container-class="'pagination'"
@@ -51,7 +51,7 @@
 <script>
 
 
-import lodash from 'lodash';
+
 import TodoList from "@/components/TodoList.vue";
 import AddUser from "@/components/addUser.vue";
 import Paginate from "vuejs-paginate-next";
@@ -62,6 +62,9 @@ import eventAddingMenu from "@/components/eventAddingMenu.vue";
 import logOut from "@/components/logout.vue"
 import {request} from "@/api/requests";
 
+
+
+
 export default {
   name: 'dashBoard',
   data(){
@@ -69,7 +72,6 @@ export default {
       todos: [],
       Events: [],
       paginatedEvents: [],
-      paginatedTodos: [],
       page: 1,
       page2: 1,
       pageCount: 0,
@@ -84,34 +86,35 @@ export default {
   },
 
   methods: {
-    clickCallback(pageNum) {
-      this.page = pageNum;
-      this.paginatedTodos = lodash.chunk(this.todos, 5);
-      console.log(pageNum);
-      this.pageCount = this.paginatedTodos.length;
-      if (this.todos.length === 1) this.paginatedTodos = this.paginatedTodos[pageNum]
-      else this.paginatedTodos = this.paginatedTodos[pageNum-1];
+    // clickCallback(pageNum)
+    // {
+    //   getAllUsers(pageNum)
+    //    // this.page = pageNum;
+    //   // this.paginatedTodos = lodash.chunk(this.todos, 5);
+    //   // console.log(pageNum);
+    //   // this.pageCount = this.paginatedTodos.length;
+    //   // if (this.todos.length === 1) this.paginatedTodos = this.paginatedTodos[pageNum]
+    //   // else this.paginatedTodos = this.paginatedTodos[pageNum-1];
+    //
+    // },
+    // clickCallback2(pageNum) {
+    //
+    //
+    //   this.page2 = pageNum;
+    //   this.paginatedEvents = lodash.chunk(this.Events, 5);
+    //   this.pageEventCount = this.paginatedEvents.length;
+    //
+    //   if (this.Events.length === 1) {this.paginatedEvents = this.paginatedEvents[0]}
+    //   else {
+    //
+    //     this.paginatedEvents = this.paginatedEvents[pageNum-1];
+    //   }
+    //
+    // },
 
-    },
-    clickCallback2(pageNum) {
 
-
-      this.page2 = pageNum;
-      this.paginatedEvents = lodash.chunk(this.Events, 5);
-      this.pageEventCount = this.paginatedEvents.length;
-
-      if (this.Events.length === 1) {this.paginatedEvents = this.paginatedEvents[0]}
-      else {
-
-        this.paginatedEvents = this.paginatedEvents[pageNum-1];
-      }
-
-    },
-
-
-    pushUser(user){
-      this.todos.push(user);
-      this.clickCallback(this.pageCount)
+    pushUser(){
+   this.getAllUsers(this.pageCount)
     },
     pushEvent(event){
       if (event.error) {
@@ -120,9 +123,6 @@ export default {
         return
       }
       console.log(this.showingAlert)
-      this.Events.push(event);
-
-      this.clickCallback2(this.pageEventCount);
       this.getAllUsers();
 
 
@@ -161,18 +161,21 @@ export default {
           }
       )
       this.Events = currentUser.events
-      this.clickCallback2(1)
+
 
 
     },
 
-    async getAllUsers(){
+    async getAllUsers(page = 1){
       this.todos = []
-      const allUsers = await request('/dashboard/getAllUsers', 'POST')
+      const allUsers = await request('/dashboard/getAllUsers', 'GET', {
+        page: page
+      })
       this.currentClientName =  allUsers.currentUser;
-      allUsers.users.forEach(user => this.todos.push(user))
-      if (this.todos.length > 1) this.clickCallback(this.page)
-      else  this.clickCallback(0)
+      this.todos = allUsers.users
+      this.page = allUsers.page
+      this.pageCount = allUsers.pages
+
 
     }
   },

@@ -35,16 +35,9 @@ app.use(cors(corsOption))
 app.use('/dashboard', dashboardRoutes)
 app.use('/authorization', userAuthoRoutes)
 
-
-
 app.get('/logout', logout)
 
 
-
-
-
-// app.post('/registration', registerUser);
-// app.post('/login', login, createSession);
 
 
 server.listen(port, () => {

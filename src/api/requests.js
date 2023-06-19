@@ -10,8 +10,9 @@ export const request = async (url, method, data = null) => {
                 withCredentials: true
             },
         });
-        if (data && method === 'POST')  return  await  $.post(`${developmentURL}${url}`, data);
-        if (method === 'GET') return  await $.get(`${developmentURL}${url}`)
+
+        if (method === 'POST') return   await  $.post(`${developmentURL}${url}`, data);
+        if (method === 'GET')  return    await $.get(`${developmentURL}${url}`, data);
 
     }
     catch (err){
@@ -19,6 +20,5 @@ export const request = async (url, method, data = null) => {
         return err.responseJSON;
 
     }
-
 
 }

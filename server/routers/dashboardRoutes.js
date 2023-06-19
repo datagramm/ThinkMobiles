@@ -5,9 +5,9 @@ const Session = require('../middleware/validateSession')
 
 router.use(Session.validateSession)
 
-router.post('/getAllUsers', Dashboard.getAllUsers)
-router.post('/pushUser', Dashboard.pushUser)
+router.get('/getAllUsers', Dashboard.getAllUsers)
 router.get('/getCurrentUserEvents', Dashboard.getCurrentUserEvents)
+router.post('/pushUser', Dashboard.pushUser)
 router.post('/pushEvent', Dashboard.pushEventDate)
 
 module.exports = router

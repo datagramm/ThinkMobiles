@@ -1,27 +1,19 @@
 import {createRouter, createWebHashHistory}  from 'vue-router';
 import dashBoard from "@/components/dashboard.vue";
 import registrationForm from "@/components/registrationForm.vue";
-import $ from 'jquery'
+import {request} from "@/api/requests";
 import loginMenu from "@/components/loginMenu";
 export default createRouter({
     history: createWebHashHistory(),
     routes: [
         {path: '/dashboard',
             component: dashBoard,
-            beforeEnter(to,from,next){
+           async beforeEnter(to,from,next){
 
-                $.ajaxSetup({
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                });
-                    $.get('http://localhost:3000/getAllUsers').then(
-                        res => {
-                            if (res.accessDenied) next()
-                            else next({path: '/registration'})
-                        }
-                    )
+             const allUsersRes = await request('/dashboard/getAllUsers', 'GET')
+               if (allUsersRes.accessDenied) next()
+               else next({path: '/registration'})
+
             }
         },
         {path: '/registration', component: registrationForm },

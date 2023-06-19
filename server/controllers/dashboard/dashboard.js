@@ -2,15 +2,35 @@ const User = require("../../models/User");
 const Helpers = require('../dashboard/helpers')
 const getAllUsers = async (req,res) => {
 
-    await User.find().then(async (users) => {
-        const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
-        res.send({users:completeUsers, accessDenied: req.body.accessDenied, currentUser: req.body.currentUserName});
-    })
+    await User.find()
+        .limit(5)
+        .skip(5 * req.query.page)
+        .exec(async (err, users) => {
+            const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
+            User.count().exec( (err,count) => {
+                res.send({
+                    users:completeUsers,
+                    accessDenied: req.body.accessDenied,
+                    currentUser: req.body.currentUserName,
+                    page: req.query.page,
+                    pages: Math.trunc(count / 5)
+                });
+            })
+
+        })
+
 }
 
 const getCurrentUserEvents = (req,res) => {
-    User.findOne({firstName: req.body.firstName, lastName: req.body.lastName ,phoneNumber: req.body.phone, mail:req.body.mail})
-        .then((user) => res.send(user) )
+    console.log(req)
+    User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail})
+        .populate({
+            path: 'events',
+
+        }).exec( (err, user) => {
+            console.log(user)
+            // res.send({user: user, page: req.query.page, pages: user.events.length })
+    })
 }
 
 const pushUser = async (req,res) => {
