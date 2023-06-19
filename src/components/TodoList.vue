@@ -1,5 +1,5 @@
 <template>
-   <table class="styled-table" @click="selectItem" >
+   <table class="styled-table"  >
      <thead>
      <tr>
        <th>Id</th>
@@ -11,7 +11,7 @@
        <th>Next Event Start</th>
      </tr>
      </thead>
-     <TodoItem  v-for="(todo, id ) of todos" v-bind:todo="todo" v-bind:id="id" :key="todo"/>
+     <TodoItem  v-for="todo  of todos" v-bind:todo="todo"  :key="todo" />
    </table>
 </template>
 
@@ -29,44 +29,22 @@ export default {
       selectedItem: undefined,
     }
   },
-  methods: {
-    selectItem(event){
-
-       if (event.target.tagName === 'TD'){
-          this.$emit('showUserProfile',  event.target.parentElement.childNodes);
-          this.$emit('getCurrentUserEvents', event.target.parentElement.childNodes);
-
-         if(this.selectedItem) {
-           this.selectedItem.classList.remove('selected')
-         }
-        this.selectedItem =  event.target.parentElement;
-         this.selectedItem.classList.add('selected')
-
-       }
-      }
-    ,
+  // methods: {
+  //   selectItem(){
+  //
+  //         this.$emit('showUserProfile',  event.target.parentElement.childNodes);
+  //         this.$emit('getCurrentUserEvents', event.target.parentElement.childNodes);
+  //
+  //
+  //
+  //
+  //      }
+  //     }
 
 
-     sortedRows(){
-       const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-
-       const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-               v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-       )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
-
-       document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-         const table = th.closest('table');
-         Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-             .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-             .forEach(tr => table.appendChild(tr) );
-       })));
-     }
-  },
-  mounted() {
-    this.sortedRows();
   }
-}
+
+
 </script>
 
 <style scoped>

@@ -3,6 +3,8 @@ import dashBoard from "@/components/dashboard.vue";
 import registrationForm from "@/components/registrationForm.vue";
 import {request} from "@/api/requests";
 import loginMenu from "@/components/loginMenu";
+
+
 export default createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -18,5 +20,6 @@ export default createRouter({
         },
         {path: '/registration', component: registrationForm },
         {path: '/login', component: loginMenu},
+        {path: '/dashboard/user/:id', component: dashBoard}
     ]
 })

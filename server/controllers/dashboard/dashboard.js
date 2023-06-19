@@ -4,7 +4,7 @@ const getAllUsers = async (req,res) => {
 
     await User.find()
         .limit(5)
-        .skip(5 * req.query.page)
+        .skip(5 * (req.query.page - 1) )
         .exec(async (err, users) => {
             const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
             User.count().exec( (err,count) => {
@@ -12,8 +12,8 @@ const getAllUsers = async (req,res) => {
                     users:completeUsers,
                     accessDenied: req.body.accessDenied,
                     currentUser: req.body.currentUserName,
-                    page: req.query.page,
-                    pages: Math.trunc(count / 5)
+                    page: +req.query.page,
+                    pages: Math.ceil(count / 5)
                 });
             })
 
@@ -21,21 +21,42 @@ const getAllUsers = async (req,res) => {
 
 }
 
-const getCurrentUserEvents = (req,res) => {
-    console.log(req)
-    User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail})
-        .populate({
-            path: 'events',
-
-        }).exec( (err, user) => {
-            console.log(user)
-            // res.send({user: user, page: req.query.page, pages: user.events.length })
-    })
+const getCurrentUser = (req, res) => {
+    User.findOne({id: req.params.id})
+        .exec((err, user) => {
+            res.send(user)
+        })
 }
 
-const pushUser = async (req,res) => {
-    const newUser = await new User({firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, mail: req.body.mail, eventCount: 0, firstEventDate: 0}).save()
-    res.send(newUser);
+const getCurrentUserEvents = (req,res) => {
+    const page = 1
+
+    User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail},{
+        events: {$slice: [5 *  page, 5]}
+    }).exec((err, user) => {
+        User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail})
+            .exec((err, userCount) => {
+                console.log(user.events)
+                res.send({
+                    events: user.events,
+                    page: 1,
+                    pages: Math.trunc(userCount.events.length / 5)
+                })
+            })
+    })
+
+
+
+}
+
+const pushUser = (req,res) => {
+    User.find().exec(async (err, users) => {
+        let id;
+        id = users.length
+        if (!users) id = 1
+        const newUser = await  new User({id: id, firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, mail: req.body.mail, eventCount: 0, firstEventDate: 0}).save()
+        res.send(newUser);
+    })
 
 }
 
@@ -144,4 +165,4 @@ const pushEventDate = async (req, res) => {
     }
 }
 
-module.exports = {getAllUsers, getCurrentUserEvents, pushUser, pushEventDate}
+module.exports = {getAllUsers, getCurrentUserEvents, pushUser, pushEventDate, getCurrentUser}

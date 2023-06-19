@@ -1,33 +1,37 @@
 <template>
 <div class="user-profile">
-  <h2>id: {{currentUser.id}}</h2>
-  <h2>firstName: {{currentUser.firstName}}</h2>
-  <h2>lastName: {{currentUser.lastName}}</h2>
-  <h2>phone: {{currentUser.phone}}</h2>
-  <h2>mail: {{currentUser.mail}}</h2>
+  <h2>id: {{id}}</h2>
+  <h2>firstName: {{firstName}}</h2>
+  <h2>lastName: {{lastName}}</h2>
+  <h2>phone: {{phone}}</h2>
+  <h2>mail: {{mail}}</h2>
   <button type="button" class="create-event" v-on:click="onSubmit">Create event</button>
 
 </div>
 </template>
 
 <script>
+import {request} from "@/api/requests";
+
 export default {
   name: "userProfile",
-  props: {
-    id: {
-      type: Number,
-      required: true,
-    },
-    currentUser: {
-      type: Object,
-      required: true,
+  data(){
+    return {
+      id: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      mail: '',
     }
   },
+
   methods: {
     onSubmit(){
       this.$emit('showMenu', 'showEventMenu');
-    }
-  }
+    },
+
+  },
+
 }
 </script>
 

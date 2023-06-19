@@ -86,6 +86,15 @@ export default {
   },
 
   methods: {
+    async getCurrentUser(){
+      const id = this.$route.params.id
+      const currentUser = await request(`/dashboard/user/${id}`, 'GET')
+      this.id = currentUser.id
+      this.firstName = currentUser.firstName
+      this.lastName = currentUser.lastName
+      this.phone = currentUser.phoneNumber
+      this.mail = currentUser.mail
+    },
     // clickCallback(pageNum)
     // {
     //   getAllUsers(pageNum)
@@ -183,6 +192,9 @@ export default {
     this.getAllUsers();
 
 
+  },
+  created() {
+    this.getCurrentUser()
   },
 
   components: {
