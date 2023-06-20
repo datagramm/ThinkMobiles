@@ -2,13 +2,7 @@
    <table class="styled-table"  >
      <thead>
      <tr>
-       <th>Id</th>
-       <th>Name</th>
-       <th>Surname</th>
-       <th>Phone</th>
-       <th>Mail</th>
-       <th>Count</th>
-       <th>Next Event Start</th>
+      <th v-for="th in rowTH" :key="th" @click="sort(th)">{{th}}</th>
      </tr>
      </thead>
      <TodoItem  v-for="todo  of todos" v-bind:todo="todo"  :key="todo" @click="selectItem(todo.id)"/>
@@ -19,6 +13,8 @@
 
 import TodoItem from "@/components/TodoItem.vue";
 import router from "@/router";
+import {request} from "@/api/requests";
+
 export default {
   name: "TodoList",
   props: ['todos'],
@@ -28,13 +24,18 @@ export default {
   data(){
     return {
       selectedItem: undefined,
+      rowTH: ['id', 'firstName', 'lastName', 'phoneNumber', 'mail', 'eventCount', 'firstEventDate']
     }
   },
   methods: {
     selectItem(id){
       router.push({name: 'user', params: {id: id}})
 
-       }
+       },
+    async sort(th){
+      await request('/dashboard/sortUser', 'GET', {th: th})
+
+    }
       }
 
 

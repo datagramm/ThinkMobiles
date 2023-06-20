@@ -2,7 +2,7 @@
 <template>
 
   <tr>
-    <td>{{id}}</td>
+    <td>{{event.id}}</td>
     <td>{{event.tittle}}</td>
     <td>{{event.description}}</td>
     <td>{{event.startEventDate}}</td>
@@ -15,10 +15,7 @@
 export default {
   name: "EventItem",
   props: {
-    id: {
-      type: Number,
-      required: true,
-    },
+
     event: {
       type: Object,
       required: true,

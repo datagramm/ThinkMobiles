@@ -89,7 +89,7 @@ export default {
 
 
     pushUser(){
-   this.getAllUsers(this.pageCount)
+   this.getAllUsers(1, 'firstName')
     },
     pushEvent(event){
       if (event.error) {
@@ -98,7 +98,7 @@ export default {
         return
       }
       console.log(this.showingAlert)
-      this.getAllUsers();
+      this.getAllUsers(1, 'firstName');
 
 
 
@@ -136,10 +136,12 @@ export default {
 
     },
 
-    async getAllUsers(page = 1){
+    async getAllUsers(page, sortBy){
       this.todos = []
       const allUsers = await request('/dashboard/getAllUsers', 'GET', {
-        page: page
+        page: page,
+        sortValue: sortBy
+
       })
       this.currentClientName =  allUsers.currentUser;
       this.todos = allUsers.users
@@ -149,8 +151,8 @@ export default {
 
     }
   },
-   mounted () {
-    this.getAllUsers();
+   mounted() {
+    this.getAllUsers(1, 'firstName');
 
 
   },

@@ -32,6 +32,10 @@ const userSchema = new Schema({
     },
     events: [
         {
+            id: {
+                type: Number,
+                required: true,
+            },
             tittle: {
                 type: String,
                 required: true,

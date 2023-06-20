@@ -3,7 +3,7 @@ import dashBoard from "@/components/dashboard.vue";
 import registrationForm from "@/components/registrationForm.vue";
 import {request} from "@/api/requests";
 import loginMenu from "@/components/loginMenu";
-import userProfile from "@/components/userProfile";
+
 
 
 
@@ -14,7 +14,7 @@ export default createRouter({
         {path: '/dashboard',
             component: dashBoard,
             children: [
-                {path: '/dashboard/user/:id', name:'user', component: userProfile}
+                {path: '/dashboard/user/:id', name:'user'}
             ],
            async beforeEnter(to,from,next){
 

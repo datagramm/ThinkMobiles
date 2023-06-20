@@ -2,24 +2,38 @@ const User = require("../../models/User");
 const Helpers = require('../dashboard/helpers')
 const getAllUsers = async (req,res) => {
 
-    await User.find()
-        .limit(5)
-        .skip(5 * (req.query.page - 1) )
-        .exec(async (err, users) => {
-            const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
-            User.count().exec( (err,count) => {
-                res.send({
-                    users:completeUsers,
-                    accessDenied: req.body.accessDenied,
-                    currentUser: req.body.currentUserName,
-                    page: +req.query.page,
-                    pages: Math.ceil(count / 5)
-                });
-            })
+    //.find()
+    //         .sort()
+    //         .limit(5)
+    //         .skip(5 * (req.query.page - 1) )
 
+
+    console.log(req.query.page , req.query.sortValue)
+    let a = 5 * (req.query.page - 1)
+    console.log(a)
+    await User.aggregate([{$match: {}},
+        {$sort: {[req.query.sortValue]: 1}},
+        {$skip: 0 },
+        {$limit: 5}
+    ], async function (err, users){
+        console.log(users)
+        const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
+        User.count().exec( (err,count) => {
+            res.send({
+                users:completeUsers,
+                accessDenied: req.body.accessDenied,
+                currentUser: req.body.currentUserName,
+                page: +req.query.page,
+                pages: Math.ceil(count / 5)
+            });
         })
 
+    })
+        // .exec(async (err, users) => {})
+
 }
+
+
 
 const getCurrentUser = (req, res) => {
     User.findOne({id: req.params.id})
@@ -36,7 +50,6 @@ const getCurrentUserEvents = (req,res) => {
     }).exec((err, user) => {
         User.findOne({firstName: req.query.currentUser.firstName, lastName: req.query.currentUser.lastName ,phoneNumber: req.query.currentUser.phone, mail:req.query.currentUser.mail})
             .exec((err, userCount) => {
-
                 res.send({
                     events: user.events,
                     page: +req.query.page,
@@ -111,7 +124,12 @@ const pushEventDate = async (req, res) => {
 
                 if (checkIs) res.send({error: true});
                 else {
+                    let id;
+                    id = user.events.length
+                    if (!user.events) id = 1
+
                     const event = {
+                        id: id,
                         tittle: req.body.event.tittle,
                         description: req.body.event.description,
                         startEventDate: currentStarEventDate,
