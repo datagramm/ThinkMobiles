@@ -33,6 +33,7 @@ export default {
   methods: {
     selectItem(id){
       router.push({name: 'user', params: {id: id}})
+
        }
       }
 

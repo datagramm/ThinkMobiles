@@ -10,7 +10,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const dashboardRoutes = require('./routers/dashboardRoutes')
 const userAuthoRoutes = require('./routers/userAuthoRoutes')
-const {logout} = require("./logout");
 
 mongoose.set('strictQuery', true);
 mongoose.connect(db).then(() => {
@@ -35,7 +34,6 @@ app.use(cors(corsOption))
 app.use('/dashboard', dashboardRoutes)
 app.use('/authorization', userAuthoRoutes)
 
-app.get('/logout', logout)
 
 
 

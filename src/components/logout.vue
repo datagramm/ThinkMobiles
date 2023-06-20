@@ -11,7 +11,7 @@ export default {
   name: "logOut",
   methods: {
     async logout() {
-      const logoutResult = await request('/logout', 'GET')
+      const logoutResult = await request('/authorization/logout', 'GET')
       if (logoutResult.logout) await router.push({path: '/registration'})
       
     }

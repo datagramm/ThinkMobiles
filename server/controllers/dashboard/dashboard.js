@@ -29,18 +29,18 @@ const getCurrentUser = (req, res) => {
 }
 
 const getCurrentUserEvents = (req,res) => {
-    const page = 1
 
-    User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail},{
-        events: {$slice: [5 *  page, 5]}
+        console.log(req.query)
+    User.findOne({firstName: req.query.currentUser.firstName, lastName: req.query.currentUser.lastName ,phoneNumber: req.query.currentUser.phone, mail:req.query.currentUser.mail},{
+        events: {$slice: [5 * (req.query.page - 1), 5]}
     }).exec((err, user) => {
-        User.findOne({firstName: req.query.firstName, lastName: req.query.lastName ,phoneNumber: req.query.phone, mail:req.query.mail})
+        User.findOne({firstName: req.query.currentUser.firstName, lastName: req.query.currentUser.lastName ,phoneNumber: req.query.currentUser.phone, mail:req.query.currentUser.mail})
             .exec((err, userCount) => {
-                console.log(user.events)
+
                 res.send({
                     events: user.events,
-                    page: 1,
-                    pages: Math.trunc(userCount.events.length / 5)
+                    page: +req.query.page,
+                    pages: Math.ceil(userCount.events.length / 5)
                 })
             })
     })

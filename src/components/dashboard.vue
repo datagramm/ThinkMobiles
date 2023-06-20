@@ -8,18 +8,18 @@
 
     <div id="dashboard">
     <div id="profile">
-      <userProfile   @showMenu="showMenu" @showUserProfile="showUserProfile"/>
+      <userProfile   @showMenu="showMenu" @showUserProfile="showUserProfile" @getCurrentUserEvents="getCurrentUserEvents"/>
 
       <Transition>
         <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
       </Transition>
-      <EventList  v-bind:events="paginatedEvents" />
+      <EventList  v-bind:events="Events" />
       <paginate class="paginate"
                 v-model="page2"
                 :page-count="pageEventCount"
                 :page-range="3"
                 :margin-pages="1"
-                :click-handler="getAllUsers"
+                :click-handler="getCurrentUserEvents"
                 :prev-text="'Prev'"
                 :next-text="'Next'"
                 :container-class="'pagination'"
@@ -71,7 +71,6 @@ export default {
     return {
       todos: [],
       Events: [],
-      paginatedEvents: [],
       page: 1,
       page2: 1,
       pageCount: 0,
@@ -113,7 +112,7 @@ export default {
         phone: user.phone,
         mail: user.mail,
       }
-     console.log(this.currentTodo)
+
     },
 
     showMenu(value){
@@ -125,19 +124,14 @@ export default {
       if (value === 'closeEventMenu') this.showingEvent = false
     },
 
-    async getCurrentUserEvents(user){
+    async getCurrentUserEvents(page = 1){
 
       const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
-          {
-            id: user[0].textContent,
-            firstName: user[1].textContent,
-            lastName: user[2].textContent,
-            phone: user[3].textContent,
-            mail: user[4].textContent,
-          }
+          {currentUser: this.currentTodo, page: page}
       )
       this.Events = currentUser.events
-
+      this.page2 = currentUser.page
+      this.pageEventCount = currentUser.pages
 
 
     },

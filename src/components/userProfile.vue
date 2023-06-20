@@ -49,6 +49,13 @@ export default {
         mail: currentUser.mail
 
       })
+      this.$emit('getCurrentUserEvents', {
+        id: currentUser.id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        phone: currentUser.phoneNumber,
+        mail: currentUser.mail
+      })
     },
 
   },

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 
 const Client = require("../models/Client");
+const Session = require("../models/Session");
 const registerUser = (req, res) => {
     const {username, password, mail} = req.body;
     bcrypt.hash(password, 10).then((hash) => {
@@ -37,4 +38,16 @@ const login = async (req, res, next) => {
 
 }
 
-module.exports = {registerUser, login}
+const logout = (req,res) => {
+    const refreshTokenId = req.cookies["refreshTokenId"];
+    Session.findOneAndDelete({"refreshToken.id": refreshTokenId});
+
+    res.clearCookie('refreshTokenId');
+    res.clearCookie('accessTokenId');
+
+    res.send({logout: true})
+
+
+}
+
+module.exports = {registerUser, login, logout}

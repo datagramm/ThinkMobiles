@@ -3,6 +3,7 @@ import dashBoard from "@/components/dashboard.vue";
 import registrationForm from "@/components/registrationForm.vue";
 import {request} from "@/api/requests";
 import loginMenu from "@/components/loginMenu";
+import userProfile from "@/components/userProfile";
 
 
 
@@ -12,6 +13,9 @@ export default createRouter({
     routes: [
         {path: '/dashboard',
             component: dashBoard,
+            children: [
+                {path: '/dashboard/user/:id', name:'user', component: userProfile}
+            ],
            async beforeEnter(to,from,next){
 
              const allUsersRes = await request('/dashboard/getAllUsers', 'GET')
@@ -22,6 +26,6 @@ export default createRouter({
         },
         {path: '/registration', component: registrationForm },
         {path: '/login', component: loginMenu},
-        {path: '/dashboard/user/:id', name:'user', component: dashBoard}
+
     ]
 })
