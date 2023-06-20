@@ -29,7 +29,7 @@
     </div>
     <div id="rightSection">
       <AddUser @showMenu="showMenu"/>
-      <TodoList  v-bind:todos="todos"   @getCurrentUserEvents="getCurrentUserEvents"/>
+      <TodoList  v-bind:todos="todos" v-bind:currentPage="page"  @getAllUsers="getAllUsers" />
       <paginate class="paginate"
                 v-model="page"
                 :page-count="pageCount"
@@ -89,7 +89,7 @@ export default {
 
 
     pushUser(){
-   this.getAllUsers(1, 'firstName')
+   this.getAllUsers(this.page, 'firstName')
     },
     pushEvent(event){
       if (event.error) {
@@ -127,7 +127,7 @@ export default {
     async getCurrentUserEvents(page = 1){
 
       const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
-          {currentUser: this.currentTodo, page: page}
+          {currentUser: this.currentTodo, page: page, sortValue: 'Tittle'}
       )
       this.Events = currentUser.events
       this.page2 = currentUser.page
@@ -152,7 +152,7 @@ export default {
     }
   },
    mounted() {
-    this.getAllUsers(1, 'firstName');
+    this.getAllUsers(this.page, 'firstName');
 
 
   },

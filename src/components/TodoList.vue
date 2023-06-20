@@ -13,17 +13,25 @@
 
 import TodoItem from "@/components/TodoItem.vue";
 import router from "@/router";
-import {request} from "@/api/requests";
+
 
 export default {
   name: "TodoList",
-  props: ['todos'],
+  props: {
+    todos: {
+      type: Array,
+      required: true
+    },
+    currentPage: {
+      type: Number,
+      required: true
+    }
+  },
   components:  {
     TodoItem
   },
   data(){
     return {
-      selectedItem: undefined,
       rowTH: ['id', 'firstName', 'lastName', 'phoneNumber', 'mail', 'eventCount', 'firstEventDate']
     }
   },
@@ -33,7 +41,8 @@ export default {
 
        },
     async sort(th){
-      await request('/dashboard/sortUser', 'GET', {th: th})
+      console.log(this.currentPage)
+      this.$emit('getAllUsers', this.currentPage, th)
 
     }
       }
