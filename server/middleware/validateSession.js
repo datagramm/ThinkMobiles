@@ -29,7 +29,7 @@ const validateSession = async (req,res,next) =>{
                     {
                         refreshToken: {id: newRefreshTokenId, timeExp: '60d'},
                     }, {new: true}).then(() =>{
-                    const newAccessTokenId = sign({login: session.userName },process.env.SECRET_JWT, {expiresIn: '10s'} )
+                    const newAccessTokenId = sign({login: session.userName },process.env.SECRET_JWT, {expiresIn: '900s'} )
                     res.cookie('accessTokenId', newAccessTokenId, { httpOnly: true, sameSite: 'none', secure: true},);
                     res.cookie('refreshTokenId', newRefreshTokenId, {maxAge: 5184000000, httpOnly: true, sameSite: 'none', secure: true},);
                     req.body.accessDenied = true;

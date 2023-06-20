@@ -11,13 +11,14 @@
        <th>Next Event Start</th>
      </tr>
      </thead>
-     <TodoItem  v-for="todo  of todos" v-bind:todo="todo"  :key="todo" />
+     <TodoItem  v-for="todo  of todos" v-bind:todo="todo"  :key="todo" @click="selectItem(todo.id)"/>
    </table>
 </template>
 
 <script>
 
 import TodoItem from "@/components/TodoItem.vue";
+import router from "@/router";
 export default {
   name: "TodoList",
   props: ['todos'],
@@ -29,17 +30,11 @@ export default {
       selectedItem: undefined,
     }
   },
-  // methods: {
-  //   selectItem(){
-  //
-  //         this.$emit('showUserProfile',  event.target.parentElement.childNodes);
-  //         this.$emit('getCurrentUserEvents', event.target.parentElement.childNodes);
-  //
-  //
-  //
-  //
-  //      }
-  //     }
+  methods: {
+    selectItem(id){
+      router.push({name: 'user', params: {id: id}})
+       }
+      }
 
 
   }

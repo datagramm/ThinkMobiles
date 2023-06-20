@@ -11,6 +11,8 @@
 </template>
 
 <script>
+
+
 import {request} from "@/api/requests";
 
 export default {
@@ -30,6 +32,28 @@ export default {
       this.$emit('showMenu', 'showEventMenu');
     },
 
+    async getCurrentUser(){
+      const id = this.$route.params.id
+      const currentUser = await request(`/dashboard/user/${id}`, 'GET')
+      this.id = currentUser.id
+      this.firstName = currentUser.firstName
+      this.lastName = currentUser.lastName
+      this.phone = currentUser.phoneNumber
+      this.mail = currentUser.mail
+
+      this.$emit('showUserProfile', {
+        id: currentUser.id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        phone: currentUser.phoneNumber,
+        mail: currentUser.mail
+
+      })
+    },
+
+  },
+     created() {
+    this.getCurrentUser()
   },
 
 }

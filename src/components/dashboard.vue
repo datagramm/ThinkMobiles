@@ -8,7 +8,7 @@
 
     <div id="dashboard">
     <div id="profile">
-      <userProfile v-bind:currentUser="currentTodo"  @showMenu="showMenu"/>
+      <userProfile   @showMenu="showMenu" @showUserProfile="showUserProfile"/>
 
       <Transition>
         <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
@@ -19,7 +19,7 @@
                 :page-count="pageEventCount"
                 :page-range="3"
                 :margin-pages="1"
-                :click-handler="clickCallback2"
+                :click-handler="getAllUsers"
                 :prev-text="'Prev'"
                 :next-text="'Next'"
                 :container-class="'pagination'"
@@ -29,7 +29,7 @@
     </div>
     <div id="rightSection">
       <AddUser @showMenu="showMenu"/>
-      <TodoList  v-bind:todos="todos"  @showUserProfile="showUserProfile"  @getCurrentUserEvents="getCurrentUserEvents"/>
+      <TodoList  v-bind:todos="todos"   @getCurrentUserEvents="getCurrentUserEvents"/>
       <paginate class="paginate"
                 v-model="page"
                 :page-count="pageCount"
@@ -86,40 +86,7 @@ export default {
   },
 
   methods: {
-    async getCurrentUser(){
-      const id = this.$route.params.id
-      const currentUser = await request(`/dashboard/user/${id}`, 'GET')
-      this.id = currentUser.id
-      this.firstName = currentUser.firstName
-      this.lastName = currentUser.lastName
-      this.phone = currentUser.phoneNumber
-      this.mail = currentUser.mail
-    },
-    // clickCallback(pageNum)
-    // {
-    //   getAllUsers(pageNum)
-    //    // this.page = pageNum;
-    //   // this.paginatedTodos = lodash.chunk(this.todos, 5);
-    //   // console.log(pageNum);
-    //   // this.pageCount = this.paginatedTodos.length;
-    //   // if (this.todos.length === 1) this.paginatedTodos = this.paginatedTodos[pageNum]
-    //   // else this.paginatedTodos = this.paginatedTodos[pageNum-1];
-    //
-    // },
-    // clickCallback2(pageNum) {
-    //
-    //
-    //   this.page2 = pageNum;
-    //   this.paginatedEvents = lodash.chunk(this.Events, 5);
-    //   this.pageEventCount = this.paginatedEvents.length;
-    //
-    //   if (this.Events.length === 1) {this.paginatedEvents = this.paginatedEvents[0]}
-    //   else {
-    //
-    //     this.paginatedEvents = this.paginatedEvents[pageNum-1];
-    //   }
-    //
-    // },
+
 
 
     pushUser(){
@@ -140,15 +107,15 @@ export default {
     showUserProfile(user){
 
       this.currentTodo = {
-        id: user[0].textContent,
-        firstName: user[1].textContent,
-        lastName: user[2].textContent,
-        phone: user[3].textContent,
-        mail: user[4].textContent,
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        mail: user.mail,
       }
-
-
+     console.log(this.currentTodo)
     },
+
     showMenu(value){
       if (value === 'showUserMenu') this.showingMenu = true
       if (value === 'showEventMenu') this.showingEvent = true
@@ -183,19 +150,17 @@ export default {
       this.currentClientName =  allUsers.currentUser;
       this.todos = allUsers.users
       this.page = allUsers.page
-      this.pageCount = allUsers.pages
+      this.pageCount = +allUsers.pages
 
 
     }
   },
-  mounted () {
+   mounted () {
     this.getAllUsers();
 
 
   },
-  created() {
-    this.getCurrentUser()
-  },
+
 
   components: {
     EventList,
