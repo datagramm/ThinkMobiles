@@ -13,7 +13,7 @@
       <Transition>
         <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
       </Transition>
-      <EventList  v-bind:events="Events" />
+      <EventList  v-bind:events="Events" v-bind:currentPage2="page2" @getCurrentUserEvents="getCurrentUserEvents"  @sortBy2="sortBy2"/>
       <paginate class="paginate"
                 v-model="page2"
                 :page-count="pageEventCount"
@@ -82,6 +82,7 @@ export default {
       accessToRoute: false,
       currentClientName: '',
       sorted: 'id',
+      sorted2: 'id',
     }
   },
 
@@ -135,7 +136,7 @@ export default {
     async getCurrentUserEvents(page = 1){
 
       const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
-          {currentUser: this.currentTodo, page: page, sortValue: 'tittle'}
+          {currentUser: this.currentTodo, page: page, sortValue: this.sorted2}
       )
       this.Events = currentUser.user
       this.page2 = currentUser.page
@@ -143,6 +144,10 @@ export default {
 
 
     },
+    sortBy2(th){
+      this.sorted2 = th
+    },
+
     sortBy(th){
       this.sorted = th
     },

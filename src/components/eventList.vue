@@ -2,11 +2,7 @@
   <table class="styled-table" >
     <thead>
     <tr>
-      <th>Id</th>
-      <th>Tittle</th>
-      <th>Description</th>
-      <th>Start Date</th>
-      <th>End Data</th>
+      <th v-for="th in rowTh" :key="th" @click="sortBy2(th)">{{th}}</th>
     </tr>
     </thead>
     <EventItem  v-for="(event) of events" v-bind:event="event"  :key="event"/>
@@ -18,16 +14,32 @@
 import EventItem from "@/components/EventItem.vue";
 export default {
   name: "EventList",
-  props: ['events'],
+  props: {
+    events: {
+      type: Array,
+      required: true,
+    },
+    currentPage2: {
+      type: Number,
+      required: true,
+    }
+  },
   components:  {
     EventItem,
   },
   data(){
     return {
       selectedItem: undefined,
+      rowTh: ['id', 'tittle', 'description', 'startEventDate', 'endEventDate']
     }
   },
   methods: {
+    async sortBy2(th){
+      console.log(this.currentPage)
+      this.$emit('getCurrentUserEvents', this.currentPage2, th)
+      this.$emit('sortBy2', th)
+
+    }
 
 
   },
