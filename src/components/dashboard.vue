@@ -8,7 +8,7 @@
 
     <div id="dashboard">
     <div id="profile">
-      <userProfile   @showMenu="showMenu" @showUserProfile="showUserProfile" @getCurrentUserEvents="getCurrentUserEvents"/>
+      <userProfile   @showMenu="showMenu"  v-bind:currentUser="currentTodo" />
 
       <Transition>
         <eventAddingMenu ref="eventMenu"  v-bind:currentUser="currentTodo" v-bind:alert="showingAlert"  v-show="showingEvent"  @closeMenu="closeMenu" @pushEvent="pushEvent"/>
@@ -29,7 +29,7 @@
     </div>
     <div id="rightSection">
       <AddUser @showMenu="showMenu"/>
-      <TodoList  v-bind:todos="todos" v-bind:currentPage="page"  @getAllUsers="getAllUsers" />
+      <TodoList  v-bind:todos="todos" v-bind:currentPage="page" @sortBy="sortBy"  @getAllUsers="getAllUsers"  @getCurrentUser="getCurrentUser" />
       <paginate class="paginate"
                 v-model="page"
                 :page-count="pageCount"
@@ -81,6 +81,7 @@ export default {
       currentTodo: {},
       accessToRoute: false,
       currentClientName: '',
+      sorted: 'id',
     }
   },
 
@@ -89,7 +90,7 @@ export default {
 
 
     pushUser(){
-   this.getAllUsers(this.page, 'firstName')
+   this.getAllUsers(this.page, 'id')
     },
     pushEvent(event){
       if (event.error) {
@@ -98,22 +99,29 @@ export default {
         return
       }
       console.log(this.showingAlert)
-      this.getAllUsers(1, 'firstName');
+      this.getAllUsers(1);
 
 
 
     },
-    showUserProfile(user){
+
+    async getCurrentUser(){
+      const id = await this.$route.params.id
+      const currentUser = await request(`/dashboard/user/${id}`, 'GET')
 
       this.currentTodo = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        mail: user.mail,
+        id: currentUser.id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        phone: currentUser.phoneNumber,
+        mail: currentUser.mail,
       }
+      console.log(this.currentTodo)
+     await this.getCurrentUserEvents()
 
     },
+
+
 
     showMenu(value){
       if (value === 'showUserMenu') this.showingMenu = true
@@ -127,20 +135,23 @@ export default {
     async getCurrentUserEvents(page = 1){
 
       const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
-          {currentUser: this.currentTodo, page: page, sortValue: 'Tittle'}
+          {currentUser: this.currentTodo, page: page, sortValue: 'tittle'}
       )
-      this.Events = currentUser.events
+      this.Events = currentUser.user
       this.page2 = currentUser.page
       this.pageEventCount = currentUser.pages
 
 
     },
+    sortBy(th){
+      this.sorted = th
+    },
 
-    async getAllUsers(page, sortBy){
+    async getAllUsers(page){
       this.todos = []
       const allUsers = await request('/dashboard/getAllUsers', 'GET', {
         page: page,
-        sortValue: sortBy
+        sortValue: this.sorted
 
       })
       this.currentClientName =  allUsers.currentUser;
@@ -152,8 +163,7 @@ export default {
     }
   },
    mounted() {
-    this.getAllUsers(this.page, 'firstName');
-
+    this.getAllUsers(this.page);
 
   },
 

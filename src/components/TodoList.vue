@@ -36,13 +36,14 @@ export default {
     }
   },
   methods: {
-    selectItem(id){
-      router.push({name: 'user', params: {id: id}})
-
+    async selectItem(id){
+      await  router.push({name: 'user', params: {id: id}})
+      this.$emit('getCurrentUser')
        },
     async sort(th){
       console.log(this.currentPage)
       this.$emit('getAllUsers', this.currentPage, th)
+      this.$emit('sortBy', th)
 
     }
       }

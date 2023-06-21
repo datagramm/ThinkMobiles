@@ -2,11 +2,11 @@
 <template>
 
   <tr>
-    <td>{{event.id}}</td>
-    <td>{{event.tittle}}</td>
-    <td>{{event.description}}</td>
-    <td>{{event.startEventDate}}</td>
-    <td>{{event.endEventDate}}</td>
+    <td>{{event.events.id}}</td>
+    <td>{{event.events.tittle}}</td>
+    <td>{{event.events.description}}</td>
+    <td>{{event.events.startEventDate}}</td>
+    <td>{{event.events.endEventDate}}</td>
   </tr>
 
 </template>

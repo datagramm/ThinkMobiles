@@ -1,5 +1,6 @@
 const User = require("../../models/User");
 const Helpers = require('../dashboard/helpers')
+
 const getAllUsers = async (req,res) => {
 
     await User
@@ -32,23 +33,40 @@ const getCurrentUser = (req, res) => {
         })
 }
 
-const getCurrentUserEvents = (req,res) => {
+const getCurrentUserEvents = async (req,res) => {
 
+    const skip = 5 * (req.query.page - 1);
+    const limit = 5;
+    const sort = `events.${req.query.sortValue}`
+    const id = req.query.currentUser.id
 
-    User.findOne({id: req.query.currentUser.id},{
-        events: {$slice: [5 * (req.query.page - 1), 5], $sort: {[req.query.sortValue] : 1}}
-    }).exec((err, user) => {
-        User.findOne({firstName: req.query.currentUser.firstName, lastName: req.query.currentUser.lastName ,phoneNumber: req.query.currentUser.phone, mail:req.query.currentUser.mail})
+     await  User.aggregate([
+        { $match: {id: parseInt(id)}},
+         { $project: {
+                 id: 1,
+                 firstName: 1,
+                 lastName: 1,
+                 phoneNumber: 1,
+                 mail: 1,
+                 eventCount: 1,
+                 firstEventDate: 1,
+                 events: {$slice: ['$events', skip, limit]}
+             }},
+         { $unwind: '$events' },
+         { $sort: {
+                 [sort]: 1
+             }}
+    ],function (err, user){
+        console.log(user)
+        User.findOne({id: id})
             .exec((err, userCount) => {
                 res.send({
-                    events: user.events,
+                    user: user,
                     page: +req.query.page,
                     pages: Math.ceil(userCount.events.length / 5)
                 })
             })
-    })
-
-
+    } )
 
 }
 
