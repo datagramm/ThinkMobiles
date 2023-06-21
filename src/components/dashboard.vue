@@ -83,6 +83,8 @@ export default {
       currentClientName: '',
       sorted: 'id',
       sorted2: 'id',
+      direction: 1,
+      direction2: 1,
     }
   },
 
@@ -136,7 +138,12 @@ export default {
     async getCurrentUserEvents(page = 1){
 
       const currentUser = await request('/dashboard/getCurrentUserEvents', 'GET',
-          {currentUser: this.currentTodo, page: page, sortValue: this.sorted2}
+          {
+            currentUser: this.currentTodo,
+            page: page,
+            sortValue: this.sorted2,
+            sortDirection: this.direction2,
+          }
       )
       this.Events = currentUser.user
       this.page2 = currentUser.page
@@ -144,20 +151,22 @@ export default {
 
 
     },
-    sortBy2(th){
+    sortBy2(th, direction){
       this.sorted2 = th
+      this.direction2 = direction
     },
 
-    sortBy(th){
+    sortBy(th, direction){
       this.sorted = th
+      this.direction = direction
     },
 
     async getAllUsers(page){
       this.todos = []
       const allUsers = await request('/dashboard/getAllUsers', 'GET', {
         page: page,
-        sortValue: this.sorted
-
+        sortValue: this.sorted,
+        sortDirection: this.direction
       })
       this.currentClientName =  allUsers.currentUser;
       this.todos = allUsers.users

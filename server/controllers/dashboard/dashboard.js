@@ -6,7 +6,7 @@ const getAllUsers = async (req,res) => {
     await User
         .find()
         .skip(5 * (req.query.page - 1))
-        .sort({[req.query.sortValue] : 1})
+        .sort({[req.query.sortValue] : req.query.sortDirection})
         .limit(5)
         .exec(async (err, users) => {
             const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
@@ -33,14 +33,14 @@ const getCurrentUser = (req, res) => {
         })
 }
 
-const getCurrentUserEvents = async (req,res) => {
+const getCurrentUserEvents = (req,res) => {
 
     const skip = 5 * (req.query.page - 1);
     const limit = 5;
     const sort = `events.${req.query.sortValue}`
     const id = req.query.currentUser.id
 
-     await  User.aggregate([
+     User.aggregate([
         { $match: {id: parseInt(id)}},
          { $project: {
                  id: 1,
@@ -54,7 +54,7 @@ const getCurrentUserEvents = async (req,res) => {
              }},
          { $unwind: '$events' },
          { $sort: {
-                 [sort]: 1
+                 [sort]: parseInt(req.query.sortDirection)
              }}
     ],function (err, user){
         console.log(user)

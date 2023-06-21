@@ -32,7 +32,8 @@ export default {
   },
   data(){
     return {
-      rowTH: ['id', 'firstName', 'lastName', 'phoneNumber', 'mail', 'eventCount', 'firstEventDate']
+      rowTH: ['id', 'firstName', 'lastName', 'phoneNumber', 'mail', 'eventCount', 'firstEventDate'],
+      directionOfSort: 1
     }
   },
   methods: {
@@ -40,10 +41,11 @@ export default {
       await  router.push({name: 'user', params: {id: id}})
       this.$emit('getCurrentUser')
        },
-    async sort(th){
-      console.log(this.currentPage)
-      this.$emit('getAllUsers', this.currentPage, th)
-      this.$emit('sortBy', th)
+    sort(th){
+      (this.directionOfSort === 1) ? this.directionOfSort = -1 : this.directionOfSort = 1
+      this.$emit('sortBy', th, this.directionOfSort)
+      this.$emit('getAllUsers', this.currentPage)
+
 
     }
       }

@@ -30,15 +30,15 @@ export default {
   data(){
     return {
       selectedItem: undefined,
-      rowTh: ['id', 'tittle', 'description', 'startEventDate', 'endEventDate']
+      rowTh: ['id', 'tittle', 'description', 'startEventDate', 'endEventDate'],
+      direction: 1,
     }
   },
   methods: {
-    async sortBy2(th){
-      console.log(this.currentPage)
+    sortBy2(th){
+      (this.direction === 1) ? this.direction = -1 : this.direction = 1
+      this.$emit('sortBy2', th, this.direction)
       this.$emit('getCurrentUserEvents', this.currentPage2, th)
-      this.$emit('sortBy2', th)
-
     }
 
 
