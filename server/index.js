@@ -35,9 +35,6 @@ app.use('/dashboard', dashboardRoutes)
 app.use('/authorization', userAuthoRoutes)
 
 
-
-
-
 server.listen(port, () => {
     console.log(`server is running at ${port}`);
 });
