@@ -16,7 +16,7 @@ const createSession =  (req, res) => {
 
     res.cookie('accessTokenId', accessTokenId,{  httpOnly: true, sameSite: 'none', secure: true },);
     res.cookie('refreshTokenId', refreshTokenId,{ maxAge: 5184000000, httpOnly: true, sameSite: 'none',secure: true},);
-    res.send({err: false})
+    res.status(200).json({err: false})
 }
 
 module.exports = {createSession}

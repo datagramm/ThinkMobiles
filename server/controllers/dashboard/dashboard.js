@@ -9,9 +9,11 @@ const getAllUsers = async (req,res) => {
         .sort({[req.query.sortValue] : req.query.sortDirection})
         .limit(5)
         .exec(async (err, users) => {
+            if (err) return res.status(500).json(err)
             const completeUsers = await Helpers.getCurrentEventForAllUsers(users)
             User.count().exec( (err,count) => {
-                res.send({
+                if (err) return res.status(500).json(err)
+                res.status(200).json({
                     users:completeUsers,
                     accessDenied: req.body.accessDenied,
                     currentUser: req.body.currentUserName,
@@ -29,7 +31,8 @@ const getAllUsers = async (req,res) => {
 const getCurrentUser = (req, res) => {
     User.findOne({id: req.params.id})
         .exec((err, user) => {
-            res.send(user)
+            if (err) return res.status(404).json(err)
+            res.status(200).json(user)
         })
 }
 
@@ -57,10 +60,12 @@ const getCurrentUserEvents = (req,res) => {
                  [sort]: parseInt(req.query.sortDirection)
              }}
     ],function (err, user){
+         if (err) return res.status(500).json(err)
         console.log(user)
         User.findOne({id: id})
             .exec((err, userCount) => {
-                res.send({
+                if (err) return res.status(500).json(err)
+                res.status(200).json({
                     user: user,
                     page: +req.query.page,
                     pages: Math.ceil(userCount.events.length / 5)
@@ -72,11 +77,12 @@ const getCurrentUserEvents = (req,res) => {
 
 const pushUser = (req,res) => {
     User.find().exec(async (err, users) => {
+        if (err) return res.status(500).json(err)
         let id;
         id = users.length
         if (!users) id = 1
         const newUser = await  new User({id: id, firstName: req.body.firstName, lastName: req.body.lastName, phoneNumber: req.body.phoneNumber, mail: req.body.mail, eventCount: 0, firstEventDate: 0}).save()
-        res.send(newUser);
+        res.status(201).json(newUser);
     })
 
 }

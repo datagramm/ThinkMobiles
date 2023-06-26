@@ -20,7 +20,7 @@ const validateSession = async (req,res,next) =>{
         if (err){
             const session = await Session.findOne({"refreshToken.id": refreshTokenId})
 
-            if (!session) res.send({users:false, accessDenied: false})
+            if (!session) res.status(401).json({users:false, accessDenied: false})
             else {
                 const userName = session.userName
                 req.body.currentUserName = userName
